@@ -1,10 +1,18 @@
-Projet Module 133 - Sessions-Handling
+🎯 Projet Module 133 - Sessions-Handling
 
-📚 Description du Projet
+📌 Description du Projet
 
-Ce projet a pour but de réaliser une application web interactive sous forme de quiz informatique. L'utilisateur pourra choisir un thème parmi plusieurs catégories (développement, réseaux, systèmes, sécurité, etc.) et répondre à une série de questions. En fonction de ses réponses, un score lui sera attribué. Un classement sera disponible pour voir les meilleurs participants.
+Ce projet a pour objectif de créer une application web interactive sous forme de quiz informatique. L'utilisateur pourra :
 
-Une interface d'administration permettra aux administrateurs de gérer les quiz en ajoutant de nouvelles questions et catégories.
+Choisir un thème parmi plusieurs catégories (Développement, Réseaux, Systèmes, Sécurité, etc.)
+
+Répondre à une série de questions
+
+Obtenir un score en fonction de ses réponses
+
+Consulter un classement des meilleurs participants
+
+Une interface administrateur permettra également la gestion des quiz avec l'ajout de nouvelles questions et catégories.
 
 🛠️ Technologies utilisées
 
@@ -16,69 +24,51 @@ Base de données : MySQL
 
 API : REST avec une API Gateway
 
-🌐 Fonctionnalités principales
+🚀 Fonctionnalités principales
 
-Côté utilisateur :
+👤 Côté utilisateur :
 
-Inscription et connexion
+✅ Inscription et connexion✅ Choix du thème du quiz✅ Réponse aux questions✅ Affichage du score final✅ Consultation du classement
 
-Choix du thème du quiz
+🔧 Côté administrateur :
 
-Réponse aux questions
+✅ Ajout de nouvelles catégories✅ Création de nouvelles questions avec choix de réponse✅ Gestion des quiz
 
-Affichage du score final
-
-Consultation du classement
-
-Côté administrateur :
-
-Ajout de nouvelles catégories
-
-Création de nouvelles questions avec choix de réponse
-
-Gestion des quiz
-
-🌐 Architecture du projet
+🏗️ Architecture du projet
 
 Le projet est structuré en plusieurs applications :
 
-Client (Frontend) : Interface utilisateur
+🎨 Client (Frontend) : Interface utilisateur
 
-API Gateway : Gère les requêtes et la redirection vers les bonnes API
+🔄 API Gateway : Gère les requêtes et la redirection vers les bonnes API
 
-API Quiz : Gère les quiz et les questions
+📚 API Quiz : Gère les quiz et les questions
 
-API Utilisateurs : Gère les comptes et l'authentification
+🔑 API Utilisateurs : Gère les comptes et l'authentification
 
-Base de données : Stocke les utilisateurs, quiz, scores, etc.
+🗄️ Base de données : Stocke les utilisateurs, quiz, scores, etc.
 
-💪 Objectifs pédagogiques
+🎯 Objectifs pédagogiques
 
-Mettre en place une gestion de session sécurisée
+✅ Mettre en place une gestion de session sécurisée✅ Structurer une application en microservices✅ Appliquer les principes des API REST✅ Séparer le frontend et backend
 
-Structurer une application en plusieurs services
+⚙️ Installation
 
-Appliquer les principes des API REST
-
-Assurer une séparation entre le frontend et le backend
-
-🛠️ Installation
-
-Cloner le projet
+🔽 Cloner le projet
 
 git clone https://github.com/ton-repo/module133.git
 
-Installer les dépendances
+📦 Installer les dépendances
 
 cd module133
 npm install
 
-Lancer le serveur
+🚀 Lancer le serveur
 
 npm start
 
-📖 Auteurs
+📝 Auteurs
 
-Illan Angel
+👨‍💻 Illan Angel👨‍💻 Noam Bourqui
 
-Noam Bourqui
+🚀 Bon développement !
