@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  gateway:
+    build: ./apiGateway/app  # Chemin vers le Dockerfile du service API Gateway
+    ports:
+      - "8080:8080"  # Port du service Gateway
+    restart: always
+    depends_on:
+      - service-rest1
+      - service-rest2  # Si ton API Gateway dépend des autres services
+
+  service-rest1:
+    build: ./serviceRest1/apiclient  # Chemin vers le Dockerfile du premier service API REST
+    ports:
+      - "8081:8080"  # Port du service API REST 1
+    restart: always
+
+  service-rest2:
+    build: ./serviceRest2/apiadmin  # Chemin vers le Dockerfile du deuxième service API REST
+    ports:
+      - "8082:8080"  # Port du service API REST 2
+    restart: always

@@ -1,15 +1,16 @@
-package apiclient.app.ctrl;
-
+package apiadmin.app.ctrl;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 @RestController
-@RequestMapping("/client")
+@RequestMapping("/admin")
 public class Controller {
-
-    @GetMapping("/Hello")
+ 
+    @GetMapping("/hello")
     public ResponseEntity<String> visites() {
         return ResponseEntity.ok("Hello World");
     }
-
+   
 }
+ 
+ 
