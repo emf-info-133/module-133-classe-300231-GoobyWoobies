@@ -34,5 +34,5 @@ git clone https://github.com/ton-repo/module133.git
 ---
 
 # Auteur
-- ** Illan Angel**
-- ** Noam Bourqui**
+- **Illan Angel**
+- **Noam Bourqui**
