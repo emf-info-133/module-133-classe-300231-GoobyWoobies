@@ -17,15 +17,26 @@ public class Controller {
     // Méthode pour rediriger vers l'API appropriée
     @GetMapping("/admin/hello")
     public ResponseEntity<String> sendAdminRequest() {
-        String apiUrl = "http://localhost:8082/admin/hello"; // URL de l'API REST 2 (Admin)
-        String response = restTemplate.postForObject(apiUrl, "admin", String.class);
-        return ResponseEntity.ok("Réponse de l'API Admin: " + response);
+        String apiUrl = "http://host.docker.internal:8082/admin/hello";
+        try {
+            System.out.println("🔵 Envoi de requête à " + apiUrl);
+            String response = restTemplate.getForObject(apiUrl, String.class);
+            System.out.println("🟢 Réponse reçue: " + response);
+            return ResponseEntity.ok("Réponse de l'API Admin: " + response);
+        } catch (Exception e) {
+            System.err.println("🔴 Erreur lors de l'appel à l'API Admin: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Erreur: " + e.getMessage());
+        }
     }
+    
+    
+    
 
     @GetMapping("/user")
     public ResponseEntity<String> sendUserRequest() {
-        String apiUrl = "http://localhost:8081/user"; // URL de l'API REST 1 (User)
-        String response = restTemplate.postForObject(apiUrl, "user", String.class);
+        String apiUrl = "http://host.docker.internal:8081/user"; // URL de l'API REST 1 (User)
+        String response = restTemplate.getForObject(apiUrl, String.class);
         return ResponseEntity.ok("Réponse de l'API User: " + response);
     }
 }

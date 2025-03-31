@@ -6,9 +6,6 @@ services:
     ports:
       - "8080:8080"  # Port du service Gateway
     restart: always
-    depends_on:
-      - service-rest1
-      - service-rest2  # Si ton API Gateway dépend des autres services
 
   service-rest1:
     build: ./serviceRest1/apiclient  # Chemin vers le Dockerfile du premier service API REST
