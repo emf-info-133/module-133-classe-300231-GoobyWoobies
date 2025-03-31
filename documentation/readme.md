@@ -1,1 +1,9 @@
-Ce dossier contient la documentation de l'élève 1, la documentation de l'élève 2 et la documentation de projet commune
+# 📂 Contenu du Dossier
+
+Ce dossier contient les éléments suivants :
+
+- 📄 **Documentation de Illan Angel**
+- 📄 **Documentation de Noam Bourqui**
+- 📄 **Documentation de projet commune**
+
+Ces documents couvrent respectivement les travaux individuels des élèves ainsi que les aspects collaboratifs du projet.
