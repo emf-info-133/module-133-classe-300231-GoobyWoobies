@@ -33,10 +33,19 @@ public class Controller {
     
     
 
-    @GetMapping("/user")
+    // Méthode pour rediriger vers l'API appropriée
+    @GetMapping("/client/hello")
     public ResponseEntity<String> sendUserRequest() {
-        String apiUrl = "http://host.docker.internal:8081/user"; // URL de l'API REST 1 (User)
-        String response = restTemplate.getForObject(apiUrl, String.class);
-        return ResponseEntity.ok("Réponse de l'API User: " + response);
+        String apiUrl = "http://host.docker.internal:8081/client/hello";
+        try {
+            System.out.println("🔵 Envoi de requête à " + apiUrl);
+            String response = restTemplate.getForObject(apiUrl, String.class);
+            System.out.println("🟢 Réponse reçue: " + response);
+            return ResponseEntity.ok("Réponse de l'API Client: " + response);
+        } catch (Exception e) {
+            System.err.println("🔴 Erreur lors de l'appel à l'API Client: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Erreur: " + e.getMessage());
+        }
     }
 }

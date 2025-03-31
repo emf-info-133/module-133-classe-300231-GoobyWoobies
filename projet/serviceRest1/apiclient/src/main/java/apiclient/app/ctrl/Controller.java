@@ -1,9 +1,9 @@
-package apiadmin.app.ctrl;
+package apiclient.app.ctrl;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/client")
 public class Controller {
  
     @GetMapping("/hello")
