@@ -2,28 +2,78 @@ version: "3.8"
 
 services:
   gateway:
-    build: ./apiGateway/app  # Chemin vers le Dockerfile du service API Gateway
+    build: ./apiGateway/app
     ports:
-      - "8080:8080"  # Port du service Gateway
+      - "8080:8080"
     restart: always
     networks:
       - mynetwork
 
   service-rest1:
-    build: ./serviceRest1/apiclient  # Chemin vers le Dockerfile du premier service API REST
+    build: ./serviceRest1/apiclient
     ports:
-      - "8081:8080"  # Port du service API REST 1
+      - "8081:8080"
     restart: always
+    depends_on:
+      - mysql-rest1
+    networks:
+      - mynetwork
+    environment:
+      DB_HOST: mysql-rest1
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: emf123
+      DB_NAME: rest1db
+
+  mysql-rest1:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: emf123
+      MYSQL_DATABASE: mysql_rest1
+      MYSQL_USER: user
+      MYSQL_PASSWORD: emf123
+    ports:
+      - "3307:3306"
+    volumes:
+      - rest1-mysql-data:/var/lib/mysql
     networks:
       - mynetwork
 
   service-rest2:
-    build: ./serviceRest2/apiadmin  # Chemin vers le Dockerfile du deuxième service API REST
+    build: ./serviceRest2/apiadmin
     ports:
-      - "8082:8080"  # Port du service API REST 2
+      - "8082:8080"
     restart: always
+    depends_on:
+      - mysql-rest2
+    networks:
+      - mynetwork
+    environment:
+      DB_HOST: mysql-rest2
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: emf123
+      DB_NAME: rest2db
+
+  mysql-rest2:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: emf123
+      MYSQL_DATABASE: mysql_rest1
+      MYSQL_USER: user
+      MYSQL_PASSWORD: emf123
+    ports:
+      - "3308:3306"
+    volumes:
+      - rest2-mysql-data:/var/lib/mysql
     networks:
       - mynetwork
 
 networks:
   mynetwork:
+
+volumes:
+  rest1-mysql-data:
+  rest2-mysql-data:
