@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   gateway:
     build: ./apiGateway/app
@@ -8,7 +6,7 @@ services:
     restart: always
     networks:
       - mynetwork
-
+ 
   service-rest1:
     build: ./serviceRest1/apiclient
     ports:
@@ -24,7 +22,7 @@ services:
       DB_USER: root
       DB_PASSWORD: emf123
       DB_NAME: rest1db
-
+ 
   mysql-rest1:
     image: mysql:latest
     restart: always
@@ -39,7 +37,7 @@ services:
       - rest1-mysql-data:/var/lib/mysql
     networks:
       - mynetwork
-
+ 
   service-rest2:
     build: ./serviceRest2/apiadmin
     ports:
@@ -55,13 +53,13 @@ services:
       DB_USER: root
       DB_PASSWORD: emf123
       DB_NAME: rest2db
-
+ 
   mysql-rest2:
     image: mysql:latest
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: emf123
-      MYSQL_DATABASE: mysql_rest1
+      MYSQL_DATABASE: mysql_rest2
       MYSQL_USER: user
       MYSQL_PASSWORD: emf123
     ports:
@@ -70,10 +68,13 @@ services:
       - rest2-mysql-data:/var/lib/mysql
     networks:
       - mynetwork
-
+ 
 networks:
   mynetwork:
-
+    driver: bridge
+    name: mynetwork  # Utilise explicitement ce nom
+ 
 volumes:
   rest1-mysql-data:
   rest2-mysql-data:
+ 

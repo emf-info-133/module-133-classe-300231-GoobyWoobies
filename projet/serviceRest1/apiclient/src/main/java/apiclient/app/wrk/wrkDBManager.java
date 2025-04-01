@@ -1,18 +1,23 @@
 package apiclient.app.wrk;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import apiclient.app.beans.Utilisateur;
-import apiclient.app.repo.UtilisateurRepository;
+import java.sql.ResultSet;
 
 @Service
 public class wrkDBManager {
 
     @Autowired
-    private UtilisateurRepository utilisateurRepository;
+    private JdbcTemplate jdbcTemplate;
 
     public String getFirstUsername() {
-        Utilisateur user = utilisateurRepository.findFirstByOrderByIdAsc();
-        return (user != null) ? user.getNom() : "Aucun utilisateur trouvé";
+        String sql = "SELECT nom FROM Utilisateur ORDER BY id ASC LIMIT 1";
+
+        try {
+            return jdbcTemplate.queryForObject(sql, (ResultSet rs, int rowNum) -> rs.getString("nom"));
+        } catch (Exception e) {
+            return "Aucun utilisateur trouvé";
+        }
     }
 }
