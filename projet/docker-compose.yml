@@ -21,7 +21,7 @@ services:
       DB_PORT: 3306
       DB_USER: root
       DB_PASSWORD: emf123
-      DB_NAME: rest1db
+      DB_NAME: mysql_rest1
  
   mysql-rest1:
     image: mysql:latest
@@ -52,7 +52,7 @@ services:
       DB_PORT: 3306
       DB_USER: root
       DB_PASSWORD: emf123
-      DB_NAME: rest2db
+      DB_NAME: mysql_rest2
  
   mysql-rest2:
     image: mysql:latest
