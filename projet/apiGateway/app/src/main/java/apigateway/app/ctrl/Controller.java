@@ -29,23 +29,19 @@ public class Controller {
             return ResponseEntity.status(500).body("Erreur: " + e.getMessage());
         }
     }
-    
-    
-    
 
-    // Méthode pour rediriger vers l'API appropriée
-    @GetMapping("/client/hello")
-    public ResponseEntity<String> sendUserRequest() {
-        String apiUrl = "http://service-rest1:8081/client/hello";
+    @GetMapping("/client/GetUsername")
+    public ResponseEntity<String> getUsernameFromClient() {
+        String apiUrl = "http://service-rest1:8081/client/GetUsername";
         try {
             System.out.println("🔵 Envoi de requête à " + apiUrl);
             String response = restTemplate.getForObject(apiUrl, String.class);
             System.out.println("🟢 Réponse reçue: " + response);
-            return ResponseEntity.ok("Réponse de l'API Client: " + response);
+            return ResponseEntity.ok("Nom d'utilisateur: " + response);
         } catch (Exception e) {
             System.err.println("🔴 Erreur lors de l'appel à l'API Client: " + e.getMessage());
-            e.printStackTrace();
             return ResponseEntity.status(500).body("Erreur: " + e.getMessage());
         }
     }
+
 }
