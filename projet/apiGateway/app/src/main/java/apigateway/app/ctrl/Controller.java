@@ -17,9 +17,9 @@ public class Controller {
     }
 
     // Méthode pour rediriger vers l'API appropriée
-    @GetMapping("/admin/GetCategorie")
+    @GetMapping("/admin/getCategories")
     public ResponseEntity<String> sendAdminRequest() {
-        String apiUrl = "http://service-rest2:8080/admin/GetCategorie";
+        String apiUrl = "http://service-rest2:8080/admin/getCategories";
         try {
             System.out.println("🔵 Envoi de requête à " + apiUrl);
             String response = restTemplate.getForObject(apiUrl, String.class);
