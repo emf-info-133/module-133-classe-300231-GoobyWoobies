@@ -1,7 +1,6 @@
 package apigateway.app.ctrl;
 
 import java.util.Map;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -9,6 +8,7 @@ import org.springframework.web.client.RestTemplate;
 import apigateway.app.models.Categorie;
 import apigateway.app.models.Question;
 
+@CrossOrigin(origins = {"http://localhost:5500"}, allowCredentials = "true")
 @RestController
 public class Controller {
     private final static String URL_CLIENT = "http://service-rest1:8080";
@@ -111,4 +111,17 @@ public class Controller {
         }
     }
 
+    @GetMapping("/client/session")
+    public ResponseEntity<String> getCurrentUserFromClient() {
+        String apiUrl = URL_CLIENT + "/client/session"; // URL de l'API Client pour obtenir l'utilisateur
+        try {
+            System.out.println("🔵 Envoi de requête à " + apiUrl);
+            String response = restTemplate.getForObject(apiUrl, String.class);
+            System.out.println("🟢 Réponse reçue: " + response);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            System.err.println("🔴 Erreur lors de l'appel à l'API Client: " + e.getMessage());
+            return ResponseEntity.status(500).body("Erreur: " + e.getMessage());
+        }
+    }
 }

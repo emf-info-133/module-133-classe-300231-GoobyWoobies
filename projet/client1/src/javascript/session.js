@@ -1,7 +1,7 @@
 // Vérification de la session utilisateur au chargement de la page
 window.addEventListener("DOMContentLoaded", () => {
   const xhr = new XMLHttpRequest();
-  xhr.open("GET", "http://localhost:8080/client/session/user", true);
+  xhr.open("GET", "http://localhost:8080/client/session", true);
   xhr.withCredentials = true; // Envoi des cookies avec la requête
 
   xhr.onload = function() {
@@ -16,7 +16,7 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     } else {
       // Redirection si la réponse n'est pas OK (par exemple, non connecté)
-      window.location.href = "/index.html";
+      window.location.href = "../index.html";
     }
   };
 
