@@ -33,4 +33,33 @@ public class Controller {
         return ResponseEntity.ok(questions);
     }
 
+    @PostMapping("/addCategory")
+    public ResponseEntity<String> addCategory(@RequestBody Categorie categorie) {
+        boolean isAdded = wrkCategorie.addCategory(categorie.getNom());
+
+        if (isAdded) {
+            return ResponseEntity.ok("Catégorie ajoutée avec succès !");
+        } else {
+            return ResponseEntity.status(500).body("Erreur lors de l'ajout de la catégorie");
+        }
+    }
+
+    @PostMapping("/addQuestion")
+    public ResponseEntity<String> addQuestion(@RequestBody Question question) {
+        boolean isAdded = wrkQuizz.addQuestion(
+                question.getTexte(),
+                question.getCategorieId(),
+                question.getChoix1(),
+                question.getChoix2(),
+                question.getChoix3(),
+                question.getChoix4(),
+                question.getBonneReponse());
+
+        if (isAdded) {
+            return ResponseEntity.ok("Question ajoutée avec succès !");
+        } else {
+            return ResponseEntity.status(500).body("Erreur lors de l'ajout de la question");
+        }
+    }
+
 }

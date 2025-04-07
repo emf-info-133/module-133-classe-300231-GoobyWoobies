@@ -39,6 +39,18 @@ public class WrkQuizz {
             return new ArrayList<>();
         }
     }
+
+    public boolean addQuestion(String texte, int categorieId, String choix1, String choix2, String choix3, String choix4, int bonneReponse) {
+        String sql = "INSERT INTO t_question (texte, categorie_id, choix_1, choix_2, choix_3, choix_4, bonne_reponse) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    
+        try {
+            int result = jdbcTemplate.update(sql, texte, categorieId, choix1, choix2, choix3, choix4, bonneReponse);
+            return result > 0;
+        } catch (Exception e) {
+            System.err.println("Erreur lors de l'ajout de la question : " + e.getMessage());
+            return false;
+        }
+    }
     
 
 }

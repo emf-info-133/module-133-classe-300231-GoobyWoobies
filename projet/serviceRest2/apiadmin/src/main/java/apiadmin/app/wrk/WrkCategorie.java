@@ -27,4 +27,18 @@ public class WrkCategorie {
             return new ArrayList<>();
         }
     }
+
+    public boolean addCategory(String nom) {
+        String sql = "INSERT INTO t_categorie (nom) VALUES (?)";
+    
+        try {
+            int result = jdbcTemplate.update(sql, nom);
+            return result > 0;
+        } catch (Exception e) {
+            System.err.println("Erreur lors de l'ajout de la catégorie : " + e.getMessage());
+            return false;
+        }
+    }
+    
+    
 }
