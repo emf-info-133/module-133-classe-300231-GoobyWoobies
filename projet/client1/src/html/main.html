@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CodeQuizz</title>
+  <script src="main.js" defer></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans">
+  <header class="bg-blue-900 text-white p-4 flex justify-between items-center">
+    <h1 class="text-lg font-bold">CodeQuizz</h1>
+    <div class="flex gap-4 items-center">
+      <span id="username" class="italic">Chargement...</span>
+      <button onclick="logout()" class="text-sm underline hover:text-red-300">Logout</button>
+    </div>
+  </header>
+
+  <main class="flex flex-col items-center mt-10">
+    <h2 class="text-4xl font-bold mb-8">CodeQuizz !</h2>
+
+    <div class="grid grid-cols-4 gap-6">
+      <div class="p-6 border rounded shadow bg-white hover:bg-gray-100 text-center cursor-pointer">Developpement</div>
+      <div class="p-6 border rounded shadow bg-white hover:bg-gray-100 text-center cursor-pointer">Sécurité</div>
+      <div class="p-6 border rounded shadow bg-white hover:bg-gray-100 text-center cursor-pointer">Réseaux</div>
+      <div class="p-6 border rounded shadow bg-white hover:bg-gray-100 text-center cursor-pointer">Système</div>
+    </div>
+
+    <button class="mt-10 px-6 py-2 bg-gray-300 hover:bg-gray-400 rounded shadow">LeaderBoard</button>
+  </main>
+</body>
+</html>

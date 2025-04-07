@@ -21,4 +21,15 @@ public class wrkDBManager {
             return "Error :" + err + "| Aucun utilisateur trouvé";
         }
     }
+
+    public boolean verifyLogin(String username, String password) {
+        String sql = "SELECT COUNT(*) FROM Utilisateur WHERE nom = ? AND mot_de_passe = ?";
+        try {
+            Integer count = jdbcTemplate.queryForObject(sql, Integer.class, username, password);
+            return count != null && count > 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
 }
