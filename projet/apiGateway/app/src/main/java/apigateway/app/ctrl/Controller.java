@@ -17,7 +17,7 @@ public class Controller {
     // Méthode pour rediriger vers l'API appropriée
     @GetMapping("/admin/hello")
     public ResponseEntity<String> sendAdminRequest() {
-        String apiUrl = "http://service-rest2:8082/admin/hello";
+        String apiUrl = "http://service-rest2:8080/admin/hello";
         try {
             System.out.println("🔵 Envoi de requête à " + apiUrl);
             String response = restTemplate.getForObject(apiUrl, String.class);
@@ -32,7 +32,7 @@ public class Controller {
 
     @GetMapping("/client/GetUsername")
     public ResponseEntity<String> getUsernameFromClient() {
-        String apiUrl = "http://service-rest1:8081/client/GetUsername";
+        String apiUrl = "http://service-rest1:8080/client/GetUsername";
         try {
             System.out.println("🔵 Envoi de requête à " + apiUrl);
             String response = restTemplate.getForObject(apiUrl, String.class);

@@ -17,7 +17,8 @@ public class wrkDBManager {
         try {
             return jdbcTemplate.queryForObject(sql, (ResultSet rs, int rowNum) -> rs.getString("nom"));
         } catch (Exception e) {
-            return "Aucun utilisateur trouvé";
+            String err = e.getMessage();
+            return "Error :" + err + "| Aucun utilisateur trouvé";
         }
     }
 }
