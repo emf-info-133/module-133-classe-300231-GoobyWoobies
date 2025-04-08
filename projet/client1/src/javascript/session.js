@@ -1,37 +1,19 @@
 window.addEventListener("DOMContentLoaded", () => {
-  const sessionId = localStorage.getItem('sessionId');
-  console.log("ID de session récupéré:", sessionId);
-  
-  if (!sessionId) {
-    console.error("Pas d'ID de session trouvé");
-    // window.location.href = "../index.html";
-    return;
-  }
-  
-  const xhr = new XMLHttpRequest();
-  // Ajoutez explicitement le sessionId comme paramètre d'URL
-  xhr.open("GET", `http://localhost:8080/client/session?sessionId=${encodeURIComponent(sessionId)}`, true);
-  
-  // Supprimez withCredentials si vous utilisez localStorage au lieu des cookies
-  // xhr.withCredentials = true;
-
-  xhr.onload = function() {
-    console.log("Status:", xhr.status);
-    console.log("Réponse:", xhr.responseText);
-    
-    if (xhr.status < 400){
-      const username = xhr.responseText;
-      document.getElementById("username").textContent = username;
-    } else {
-      console.error("Erreur de session:", xhr.responseText);
-      // localStorage.removeItem('sessionId');
-      // window.location.href = "../index.html";
+  fetch("http://localhost:8080/client/current-user", {
+    credentials: "include" // Important pour les cookies de session
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("Not authenticated");
     }
-  };
-  
-  xhr.onerror = function() {
-    console.error("Erreur de requête Ajax");
-  };
-
-  xhr.send();
+    return response.text();
+  })
+  .then(username => {
+    console.log(username);
+    document.getElementById("username").textContent = username;
+  })
+  .catch(error => {
+    console.error("Session error:", error);
+    //window.location.href = "../index.html";
+  });
 });

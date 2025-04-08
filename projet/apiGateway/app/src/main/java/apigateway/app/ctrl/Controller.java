@@ -1,20 +1,14 @@
 package apigateway.app.ctrl;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import apigateway.app.models.Categorie;
 import apigateway.app.models.Question;
+import jakarta.servlet.http.HttpSession;
 
 @CrossOrigin(origins = { "http://localhost:5500" }, allowCredentials = "true")
 @RestController
@@ -22,7 +16,6 @@ public class Controller {
     private final static String URL_CLIENT = "http://service-rest1:8080";
     private final static String URL_ADMIN = "http://service-rest2:8080";
     private final RestTemplate restTemplate;
-    private String idSession;
 
     // Constructeur pour injecter RestTemplate
     public Controller(RestTemplate restTemplate) {
@@ -110,66 +103,51 @@ public class Controller {
     }
 
     @PostMapping("/client/login")
-    public ResponseEntity<String> login(@RequestBody Map<String, String> credentials) {
+    public ResponseEntity<String> login(@RequestBody Map<String, String> credentials, HttpSession session) {
         String apiUrl = URL_CLIENT + "/client/login";
         try {
             System.out.println("⚡ Tentative de connexion avec: " + credentials);
             ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, credentials, String.class);
 
-            System.out.println("⚡ Code de statut: " + response.getStatusCode());
-            System.out.println("⚡ Corps de la réponse: " + response.getBody());
-
             if (response.getStatusCode().is2xxSuccessful()) {
-                idSession = response.getBody();
-                System.out.println("✅ ID de session obtenu: " + idSession);
-                return ResponseEntity.ok(idSession);
+                String username = response.getBody();
+                System.out.println(username);
+                session.setAttribute("username", username);
+                return ResponseEntity.ok(username);
             }
 
-            System.out.println("❌ Échec de connexion: " + response.getStatusCode());
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
         } catch (Exception e) {
             System.out.println("❌ Exception: " + e.getMessage());
-            e.printStackTrace(); // Ajouter la stack trace complète
+            e.printStackTrace();
             return ResponseEntity.status(500).body("Erreur lors de l'appel à l'API Client: " + e.getMessage());
         }
     }
 
     @GetMapping("/client/session")
-    public ResponseEntity<String> getCurrentUserFromClient(@RequestParam String sessionId) {
-        System.out.println("⚡ API Gateway - SessionId reçu: " + sessionId);
-
-        if (sessionId == null || sessionId.isEmpty()) {
-            return ResponseEntity.badRequest().body("Session ID is required");
-        }
-
+    public ResponseEntity<String> getCurrentUser(HttpSession session) {
+        String apiUrl = URL_CLIENT + "/client/login";
         try {
-            // Construction explicite du paramètre de requête
-            UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(URL_CLIENT + "/client/session")
-                    .queryParam("sessionId", sessionId);
-
-            String apiUrl = builder.toUriString();
-            System.out.println("🔵 Appel URL complète: " + apiUrl);
-
-            // Utilisation d'un HttpEntity pour plus de contrôle
-            HttpHeaders headers = new HttpHeaders();
-            HttpEntity<?> entity = new HttpEntity<>(headers);
-
-            ResponseEntity<String> response = restTemplate.exchange(
-                    apiUrl,
-                    HttpMethod.GET,
-                    entity,
-                    String.class);
-
-            System.out.println("🔵 Réponse du service: " + response.getStatusCode() + " - " + response.getBody());
-
+            ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
-        } catch (HttpClientErrorException e) {
-            System.err.println("🔴 Erreur HTTP: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
-            return ResponseEntity.status(e.getStatusCode()).body("Erreur: " + e.getResponseBodyAsString());
         } catch (Exception e) {
-            System.err.println("🔴 Exception: " + e.getClass().getName() + " - " + e.getMessage());
+            System.out.println("❌ Exception: " + e.getMessage());
             e.printStackTrace();
-            return ResponseEntity.internalServerError().body("Failed to verify session: " + e.getMessage());
+            return ResponseEntity.status(500).body("Erreur lors de l'appel à l'API Client: " + e.getMessage());
         }
     }
+
+    @PostMapping("/client/logout")
+    public ResponseEntity<String> logout(HttpSession session) {
+        if (session != null) {
+            session.invalidate();
+        }
+        try {
+            restTemplate.postForEntity(URL_CLIENT + "/client/logout", null, String.class);
+            return ResponseEntity.ok("Logged out successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error during logout: " + e.getMessage());
+        }
+    }
+
 }

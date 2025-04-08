@@ -1,4 +1,3 @@
-// Fonction pour gérer la soumission du formulaire de connexion
 document.getElementById("loginForm").addEventListener("submit", (e) => {
   e.preventDefault();
   
@@ -11,47 +10,39 @@ document.getElementById("loginForm").addEventListener("submit", (e) => {
     password: password
   };
 
-  // Création de la requête AJAX pour la connexion
-  const xhr = new XMLHttpRequest();
-  xhr.open("POST", "http://localhost:8080/client/login", true);
-  xhr.setRequestHeader("Content-Type", "application/json"); // Spécification du type de contenu
-
-  // Définition du comportement en cas de réponse
-  xhr.onreadystatechange = () => {
-    if (xhr.readyState === 4) {
-      const data = xhr.responseText;
-      resultEl.textContent = data;
-      console.log("ID de session reçu:", data); // Ajoutez cette ligne
-      if (xhr.status === 200) {
-        localStorage.setItem('sessionId', data);
-        console.log("ID de session stocké:", localStorage.getItem('sessionId')); // Vérifiez le stockage
-        window.location.href = "./html/main.html";
-      }
+  fetch("http://localhost:8080/client/login", {
+    method: "POST",
+    credentials: "include", // Important pour les cookies de session
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(userCredentials)
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("Login failed");
     }
-  };
-
-  // Envoi de la requête avec les données JSON
-  xhr.send(JSON.stringify(userCredentials));
+    return response.text();
+  })
+  .then(username => {
+    resultEl.textContent = `Bienvenue ${username}`;
+    window.location.href = "./html/main.html";
+  })
+  .catch(error => {
+    resultEl.textContent = "Erreur de connexion";
+    console.error("Error:", error);
+  });
 });
 
-// Fonction pour gérer la déconnexion
 function logout() {
-  const sessionId = localStorage.getItem('sessionId');
-  
-  const xhr = new XMLHttpRequest();
-  xhr.open("GET", `http://localhost:8080/logout?sessionId=${encodeURIComponent(sessionId)}`, true);
-  xhr.withCredentials = true;
-
-  xhr.onload = function() {
-    if (xhr.status === 200) {
-      localStorage.removeItem('sessionId'); // Supprimez la session
-      window.location.href = "/login.html";
-    }
-  };
-
-  xhr.onerror = function() {
-    console.error("Erreur de déconnexion");
-  };
-
-  xhr.send();
+  fetch("http://localhost:8080/client/logout", {
+    method: "POST",
+    credentials: "include"
+  })
+  .then(response => {
+    window.location.href = "/index.html";
+  })
+  .catch(error => {
+    console.error("Logout error:", error);
+  });
 }
