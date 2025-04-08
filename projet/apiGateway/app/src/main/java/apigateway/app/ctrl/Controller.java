@@ -126,7 +126,7 @@ public class Controller {
 
     @GetMapping("/client/session")
     public ResponseEntity<String> getCurrentUser(HttpSession session) {
-        String apiUrl = URL_CLIENT + "/client/login";
+        String apiUrl = URL_CLIENT + "/client/session";
         try {
             ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());

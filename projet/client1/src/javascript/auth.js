@@ -1,4 +1,5 @@
-document.getElementById("loginForm").addEventListener("submit", (e) => {
+// Fonction pour gérer la soumission du formulaire de connexion
+document.getElementById("loginForm").addEventListener("submit", function(e) {
   e.preventDefault();
   
   const username = document.getElementById("username").value;
@@ -10,39 +11,47 @@ document.getElementById("loginForm").addEventListener("submit", (e) => {
     password: password
   };
 
-  fetch("http://localhost:8080/client/login", {
-    method: "POST",
-    credentials: "include", // Important pour les cookies de session
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(userCredentials)
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error("Login failed");
+  const xhr = new XMLHttpRequest();
+  xhr.open("POST", "http://localhost:8080/client/login", true);
+  xhr.withCredentials = true; // Important pour les cookies de session
+  xhr.setRequestHeader("Content-Type", "application/json");
+
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      const username = xhr.responseText;
+      resultEl.textContent = "Bienvenue " + username;
+      window.location.href = "./html/main.html";
+    } else {
+      resultEl.textContent = "Erreur de connexion";
+      console.error("Erreur:", xhr.status, xhr.responseText);
     }
-    return response.text();
-  })
-  .then(username => {
-    resultEl.textContent = `Bienvenue ${username}`;
-    window.location.href = "./html/main.html";
-  })
-  .catch(error => {
-    resultEl.textContent = "Erreur de connexion";
-    console.error("Error:", error);
-  });
+  };
+
+  xhr.onerror = function() {
+    resultEl.textContent = "Erreur réseau";
+    console.error("Erreur réseau");
+  };
+
+  xhr.send(JSON.stringify(userCredentials));
 });
 
+// Fonction pour gérer la déconnexion
 function logout() {
-  fetch("http://localhost:8080/client/logout", {
-    method: "POST",
-    credentials: "include"
-  })
-  .then(response => {
-    window.location.href = "/index.html";
-  })
-  .catch(error => {
-    console.error("Logout error:", error);
-  });
+  const xhr = new XMLHttpRequest();
+  xhr.open("POST", "http://localhost:8080/client/logout", true);
+  xhr.withCredentials = true;
+
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      window.location.href = "/index.html";
+    } else {
+      console.error("Erreur lors de la déconnexion:", xhr.status);
+    }
+  };
+
+  xhr.onerror = function() {
+    console.error("Erreur réseau lors de la déconnexion");
+  };
+
+  xhr.send();
 }
