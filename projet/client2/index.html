@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CodeQuizz - Administration</title>
+  <script src="../javascript/admin.js" defer></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tailwindcss-animated@1.0.0/src/index.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dark: {
+              900: '#0f1116',
+              800: '#151822',
+              700: '#1c2033',
+              600: '#2c3149'
+            },
+            accent: {
+              primary: '#6366f1',
+              secondary: '#8b5cf6'
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gradient-to-br from-dark-900 to-dark-800 font-sans min-h-screen text-gray-200">
+  <!-- Éléments décoratifs en arrière-plan -->
+  <div class="fixed inset-0 z-0 overflow-hidden">
+    <div class="absolute top-10 left-10 w-96 h-96 bg-accent-primary/20 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-10 right-10 w-96 h-96 bg-accent-primary/10 rounded-full blur-3xl"></div>
+  </div>
+
+  <div class="relative z-10">
+    <header class="backdrop-blur-md bg-dark-800/60 border-b border-white/10 text-white p-4 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <h1 class="text-2xl font-bold tracking-tighter bg-gradient-to-r from-accent-primary to-accent-secondary text-transparent bg-clip-text">CodeQuizz</h1>
+        <span class="text-xs px-2 py-1 rounded bg-accent-primary/20 text-accent-primary border border-accent-primary/20">Admin</span>
+      </div>
+      <div class="flex gap-4 items-center">
+        <span id="username" class="text-gray-300 px-3 py-1 rounded-full bg-dark-700/50 backdrop-blur-sm border border-white/10">
+          <span>Admin</span>
+        </span>
+        <button onclick="logout()" class="text-sm bg-dark-700/80 hover:bg-dark-600/90 px-4 py-1.5 rounded-full shadow-lg shadow-accent-primary/10 transition-all duration-300 hover:scale-105 backdrop-blur-sm border border-white/10">
+          Déconnexion
+        </button>
+      </div>
+    </header>
+
+    <main class="container mx-auto py-8 px-4">
+      <div class="flex flex-col md:flex-row gap-8">
+        <!-- Sidebar - Liste des catégories -->
+        <div class="w-full md:w-1/4">
+          <div class="backdrop-blur-lg bg-dark-700/30 border border-white/10 rounded-xl shadow-lg p-6">
+            <h2 class="text-xl font-semibold mb-6 text-white">Catégories</h2>
+            
+            <!-- Liste des catégories -->
+            <ul class="space-y-2">
+              <li>
+                <button class="w-full text-left p-3 rounded-lg flex items-center gap-3 bg-accent-primary/20 border border-accent-primary/30 text-white hover:bg-accent-primary/30 transition duration-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                  </svg>
+                  Développement
+                </button>
+              </li>
+              <li>
+                <button class="w-full text-left p-3 rounded-lg flex items-center gap-3 bg-dark-600/20 border border-white/5 text-gray-300 hover:bg-accent-primary/20 transition duration-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  Sécurité
+                </button>
+              </li>
+              <li>
+                <button class="w-full text-left p-3 rounded-lg flex items-center gap-3 bg-dark-600/20 border border-white/5 text-gray-300 hover:bg-accent-primary/20 transition duration-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                  </svg>
+                  Réseaux
+                </button>
+              </li>
+              <li>
+                <button class="w-full text-left p-3 rounded-lg flex items-center gap-3 bg-dark-600/20 border border-white/5 text-gray-300 hover:bg-accent-primary/20 transition duration-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                  </svg>
+                  Système
+                </button>
+              </li>
+            </ul>
+            
+            <!-- Bouton ajouter catégorie -->
+            <button class="w-full mt-6 p-2 flex justify-center items-center gap-2 rounded-lg border border-white/10 bg-dark-600/30 hover:bg-dark-600/50 transition duration-300 text-gray-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+              Nouvelle catégorie
+            </button>
+          </div>
+        </div>
+        
+        <!-- Main content - Formulaire d'ajout de question -->
+        <div class="w-full md:w-3/4">
+          <div class="backdrop-blur-lg bg-dark-700/30 border border-white/10 rounded-xl shadow-lg p-6">
+            <div class="flex justify-between items-center mb-8">
+              <h2 class="text-2xl font-semibold text-white">Ajouter une question</h2>
+              <span class="text-sm px-3 py-1 rounded-full bg-accent-primary/20 text-accent-primary">Catégorie: Développement</span>
+            </div>
+            
+            <form id="questionForm" class="space-y-6">
+              <!-- Question -->
+              <div class="space-y-2">
+                <label for="question" class="block text-sm font-medium text-gray-300">Question</label>
+                <input 
+                  type="text" 
+                  id="question" 
+                  name="question" 
+                  class="w-full px-4 py-3 rounded-lg bg-dark-600/50 border border-white/10 text-white placeholder-gray-400 focus:ring-2 focus:ring-accent-primary/50 focus:border-accent-primary/50 focus:outline-none transition duration-300"
+                  placeholder="Quelle est la différence entre var, let et const en JavaScript ?"
+                >
+              </div>
+              
+              <!-- Choix de réponses -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                  <label for="choix1" class="block text-sm font-medium text-gray-300">Choix 1</label>
+                  <div class="relative">
+                    <input 
+                      type="text" 
+                      id="choix1" 
+                      name="choix1" 
+                      class="w-full px-4 py-3 rounded-lg bg-dark-600/50 border border-white/10 text-white placeholder-gray-400 focus:ring-2 focus:ring-accent-primary/50 focus:border-accent-primary/50 focus:outline-none transition duration-300"
+                      placeholder="Réponse possible"
+                    >
+                    <div class="absolute right-3 top-3">
+                      <input type="radio" name="bonne-reponse" value="1" id="bonne1" class="form-radio h-4 w-4 text-accent-primary focus:ring-accent-primary border-gray-500">
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="space-y-2">
+                  <label for="choix2" class="block text-sm font-medium text-gray-300">Choix 2</label>
+                  <div class="relative">
+                    <input 
+                      type="text" 
+                      id="choix2" 
+                      name="choix2" 
+                      class="w-full px-4 py-3 rounded-lg bg-dark-600/50 border border-white/10 text-white placeholder-gray-400 focus:ring-2 focus:ring-accent-primary/50 focus:border-accent-primary/50 focus:outline-none transition duration-300"
+                      placeholder="Réponse possible"
+                    >
+                    <div class="absolute right-3 top-3">
+                      <input type="radio" name="bonne-reponse" value="2" id="bonne2" class="form-radio h-4 w-4 text-accent-primary focus:ring-accent-primary border-gray-500">
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="space-y-2">
+                  <label for="choix3" class="block text-sm font-medium text-gray-300">Choix 3</label>
+                  <div class="relative">
+                    <input 
+                      type="text" 
+                      id="choix3" 
+                      name="choix3" 
+                      class="w-full px-4 py-3 rounded-lg bg-dark-600/50 border border-white/10 text-white placeholder-gray-400 focus:ring-2 focus:ring-accent-primary/50 focus:border-accent-primary/50 focus:outline-none transition duration-300"
+                      placeholder="Réponse possible"
+                    >
+                    <div class="absolute right-3 top-3">
+                      <input type="radio" name="bonne-reponse" value="3" id="bonne3" class="form-radio h-4 w-4 text-accent-primary focus:ring-accent-primary border-gray-500">
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="space-y-2">
+                  <label for="choix4" class="block text-sm font-medium text-gray-300">Choix 4</label>
+                  <div class="relative">
+                    <input 
+                      type="text" 
+                      id="choix4" 
+                      name="choix4" 
+                      class="w-full px-4 py-3 rounded-lg bg-dark-600/50 border border-white/10 text-white placeholder-gray-400 focus:ring-2 focus:ring-accent-primary/50 focus:border-accent-primary/50 focus:outline-none transition duration-300"
+                      placeholder="Réponse possible"
+                    >
+                    <div class="absolute right-3 top-3">
+                      <input type="radio" name="bonne-reponse" value="4" id="bonne4" class="form-radio h-4 w-4 text-accent-primary focus:ring-accent-primary border-gray-500">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Niveau de difficulté -->
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-300">Niveau de difficulté</label>
+                <div class="flex gap-4">
+                  <label class="inline-flex items-center cursor-pointer">
+                    <input type="radio" name="difficulte" value="facile" class="form-radio h-4 w-4 text-accent-primary focus:ring-accent-primary border-gray-500" checked>
+                    <span class="ml-2 text-gray-300">Facile</span>
+                  </label>
+                  <label class="inline-flex items-center cursor-pointer">
+                    <input type="radio" name="difficulte" value="moyen" class="form-radio h-4 w-4 text-accent-primary focus:ring-accent-primary border-gray-500">
+                    <span class="ml-2 text-gray-300">Moyen</span>
+                  </label>
+                  <label class="inline-flex items-center cursor-pointer">
+                    <input type="radio" name="difficulte" value="difficile" class="form-radio h-4 w-4 text-accent-primary focus:ring-accent-primary border-gray-500">
+                    <span class="ml-2 text-gray-300">Difficile</span>
+                  </label>
+                </div>
+              </div>
+              
+              <!-- Boutons -->
+              <div class="flex gap-4 pt-4">
+                <button type="submit" class="flex-1 py-3 px-6 bg-gradient-to-r from-accent-primary to-accent-secondary text-white font-medium rounded-lg shadow-lg shadow-accent-primary/20 hover:shadow-accent-primary/40 transition duration-300 hover:scale-105">
+                  Ajouter la question
+                </button>
+                <button type="reset" class="py-3 px-6 bg-dark-600/50 text-gray-300 font-medium rounded-lg border border-white/10 hover:bg-dark-600/70 transition duration-300">
+                  Réinitialiser
+                </button>
+              </div>
+            </form>
+          </div>
+          
+          <!-- Liste des questions récentes -->
+          <div class="mt-8 backdrop-blur-lg bg-dark-700/30 border border-white/10 rounded-xl shadow-lg p-6">
+            <h2 class="text-xl font-semibold mb-6 text-white">Questions récentes</h2>
+            
+            <div class="space-y-4">
+              <div class="p-4 rounded-lg bg-dark-600/40 border border-white/5 hover:border-accent-primary/30 transition duration-300">
+                <div class="flex justify-between items-start">
+                  <h3 class="font-medium text-gray-200">Quelle méthode utilise-t-on pour convertir un JSON en objet JavaScript ?</h3>
+                  <span class="text-xs px-2 py-1 rounded-full bg-accent-primary/20 text-accent-primary">Développement</span>
+                </div>
+                <div class="mt-2 text-sm text-gray-400">
+                  <p>4 choix · Difficulté: Facile · Ajoutée le 08/04/2025</p>
+                </div>
+              </div>
+              
+              <div class="p-4 rounded-lg bg-dark-600/40 border border-white/5 hover:border-accent-primary/30 transition duration-300">
+                <div class="flex justify-between items-start">
+                  <h3 class="font-medium text-gray-200">Quel protocole est utilisé pour la résolution des noms de domaine en adresses IP ?</h3>
+                  <span class="text-xs px-2 py-1 rounded-full bg-accent-primary/20 text-accent-primary">Réseaux</span>
+                </div>
+                <div class="mt-2 text-sm text-gray-400">
+                  <p>4 choix · Difficulté: Moyen · Ajoutée le 07/04/2025</p>
+                </div>
+              </div>
+            </div>
+            
+            <button class="w-full mt-6 p-2 flex justify-center items-center gap-2 rounded-lg border border-white/10 bg-dark-600/30 hover:bg-dark-600/50 transition duration-300 text-gray-300">
+              Voir toutes les questions
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
