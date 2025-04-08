@@ -46,15 +46,10 @@ public class Controller {
 
     @PostMapping("/addQuestion")
     public ResponseEntity<String> addQuestion(@RequestBody Question question) {
-        boolean isAdded = wrkQuizz.addQuestion(
-                question.getTexte(),
-                question.getCategorieId(),
-                question.getChoix1(),
-                question.getChoix2(),
-                question.getChoix3(),
-                question.getChoix4(),
-                question.getBonneReponse());
+        System.out.println("🔵 Question reçue : " + question + question.getBonneReponse());
 
+        boolean isAdded = wrkQuizz.addQuestion(question.getTexte(), question.getCategorieId(), question.getChoix1(), question.getChoix2(), question.getChoix3(), question.getChoix4(), question.getBonneReponse());
+        
         if (isAdded) {
             return ResponseEntity.ok("Question ajoutée avec succès !");
         } else {

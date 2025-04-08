@@ -3,11 +3,7 @@ package apiadmin.app.wrk;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-
-import apiadmin.app.models.Categorie;
 import apiadmin.app.models.Question;
-
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +20,8 @@ public class WrkQuizz {
         try {
             return jdbcTemplate.query(sql, new Object[]{categorieId}, (rs, rowNum) -> {
                 Question q = new Question();
-                q.setId(rs.getInt("id"));
                 q.setTexte(rs.getString("texte"));
+                q.setId(rs.getInt("id"));
                 q.setCategorieId(rs.getInt("categorie_id"));
                 q.setChoix1(rs.getString("choix1"));
                 q.setChoix2(rs.getString("choix2"));
@@ -40,17 +36,21 @@ public class WrkQuizz {
         }
     }
 
-    public boolean addQuestion(String texte, int categorieId, String choix1, String choix2, String choix3, String choix4, int bonneReponse) {
-        String sql = "INSERT INTO t_question (texte, categorie_id, choix_1, choix_2, choix_3, choix_4, bonne_reponse) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    
+    public boolean addQuestion(String texte, int categorie_id, String choix1, String choix2, String choix3, String choix4, int bonne_reponse) {
+        String sql = "INSERT INTO t_question (texte, categorie_id, choix1, choix2, choix3, choix4, bonne_reponse) VALUES (?, ?, ?, ?, ?, ?, ?)";
+   
         try {
-            int result = jdbcTemplate.update(sql, texte, categorieId, choix1, choix2, choix3, choix4, bonneReponse);
-            return result > 0;
+
+            // Insertion dans la base de données
+            int result = jdbcTemplate.update(sql, texte, categorie_id, choix1, choix2, choix3, choix4, bonne_reponse);
+            return result > 0;  // Retourne true si une ligne a été insérée avec succès
         } catch (Exception e) {
             System.err.println("Erreur lors de l'ajout de la question : " + e.getMessage());
-            return false;
+            return false;  // Retourne faux en cas d'erreur
         }
     }
+    
+    
     
 
 }
