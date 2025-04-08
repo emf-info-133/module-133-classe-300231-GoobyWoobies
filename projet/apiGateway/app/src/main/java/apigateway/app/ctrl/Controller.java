@@ -37,7 +37,7 @@ public class Controller {
             System.out.println("🔵 Envoi de requête à " + apiUrl);
             String response = restTemplate.getForObject(apiUrl, String.class);
             System.out.println("🟢 Réponse reçue: " + response);
-            return ResponseEntity.ok("Categories : " + response);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             System.err.println("🔴 Erreur lors de l'appel à l'API Admin: " + e.getMessage());
             return ResponseEntity.status(500).body("Erreur: " + e.getMessage());
