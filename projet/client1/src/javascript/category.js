@@ -38,6 +38,7 @@ function displayCategories() {
   categoriesContainer.html('<div class="col-span-full text-center"><span class="animate-pulse">Chargement des catégories...</span></div>');
   
   fetchCategories(
+    
     // Success callback
     function(categories) {
       // Vider le conteneur
@@ -118,7 +119,7 @@ function createCategoryCard(category) {
 function selectCategory(categoryId) {
   console.log(`Catégorie sélectionnée: ${categoryId}`);
   // Redirection vers la page du quiz avec l'ID de la catégorie
-  window.location.href = `./quiz.html?category=${categoryId}`;
+  window.location.href = `./quizz.html?category=${categoryId}`;
 }
 
 // Charger les catégories au chargement de la page
