@@ -18,17 +18,14 @@ document.getElementById("loginForm").addEventListener("submit", (e) => {
 
   // Définition du comportement en cas de réponse
   xhr.onreadystatechange = () => {
-    if (xhr.readyState === 4) {  // Si la requête est terminée
+    if (xhr.readyState === 4) {
       const data = xhr.responseText;
       resultEl.textContent = data;
-      resultEl.classList.remove("text-red-500", "text-green-500");
-
+      console.log("ID de session reçu:", data); // Ajoutez cette ligne
       if (xhr.status === 200) {
-        resultEl.classList.add("text-green-500");
-        // Redirection vers main.html après une connexion réussie
+        localStorage.setItem('sessionId', data);
+        console.log("ID de session stocké:", localStorage.getItem('sessionId')); // Vérifiez le stockage
         window.location.href = "./html/main.html";
-      } else {
-        resultEl.classList.add("text-red-500");
       }
     }
   };
@@ -39,13 +36,16 @@ document.getElementById("loginForm").addEventListener("submit", (e) => {
 
 // Fonction pour gérer la déconnexion
 function logout() {
+  const sessionId = localStorage.getItem('sessionId');
+  
   const xhr = new XMLHttpRequest();
-  xhr.open("POST", "http://localhost:8080/logout", true);
-  xhr.withCredentials = true; // Envoi des cookies avec la requête
+  xhr.open("GET", `http://localhost:8080/logout?sessionId=${encodeURIComponent(sessionId)}`, true);
+  xhr.withCredentials = true;
 
   xhr.onload = function() {
     if (xhr.status === 200) {
-      window.location.href = "/login.html"; // Rediriger après une déconnexion réussie
+      localStorage.removeItem('sessionId'); // Supprimez la session
+      window.location.href = "/login.html";
     }
   };
 
