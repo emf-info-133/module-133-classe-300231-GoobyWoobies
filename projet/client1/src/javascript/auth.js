@@ -30,6 +30,7 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
   xhr.onerror = function() {
     resultEl.textContent = "Erreur réseau";
     console.error("Erreur réseau");
+    console.log(error);
   };
 
   xhr.send(JSON.stringify(userCredentials));
@@ -40,7 +41,6 @@ function logout() {
   const xhr = new XMLHttpRequest();
   xhr.open("POST", "http://localhost:8080/client/logout", true);
   xhr.withCredentials = true;
-
   xhr.onload = function() {
     if (xhr.status === 200) {
       window.location.href = "/index.html";
@@ -48,10 +48,8 @@ function logout() {
       console.error("Erreur lors de la déconnexion:", xhr.status);
     }
   };
-
   xhr.onerror = function() {
     console.error("Erreur réseau lors de la déconnexion");
   };
-
   xhr.send();
 }

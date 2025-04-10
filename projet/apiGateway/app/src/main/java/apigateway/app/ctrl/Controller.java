@@ -2,12 +2,14 @@ package apigateway.app.ctrl;
 
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import apigateway.app.models.Categorie;
 import apigateway.app.models.Question;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @CrossOrigin(origins = { "http://localhost:5500" }, allowCredentials = "true")
@@ -149,5 +151,24 @@ public class Controller {
             return ResponseEntity.status(500).body("Error during logout: " + e.getMessage());
         }
     }
+
+    @PostMapping("/client/logout")
+public ResponseEntity<String> logout(HttpServletRequest request) {
+  try {
+    // Créer un client HTTP pour appeler l'API REST
+    RestTemplate restTemplate = new RestTemplate();
+    
+    // URL de l'API REST de déconnexion
+    String apiRestUrl = "http://localhost:8081/logout"; // Ajustez selon votre configuration
+    
+    // Relayer la requête et récupérer la réponse
+    ResponseEntity<String> response = restTemplate.postForEntity(apiRestUrl, null, String.class);
+    
+    // Retourner la réponse à l'utilisateur
+    return response;
+  } catch (Exception e) {
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur de déconnexion");
+  }
+}
 
 }
