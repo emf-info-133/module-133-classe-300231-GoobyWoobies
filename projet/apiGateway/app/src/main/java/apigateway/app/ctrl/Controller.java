@@ -140,35 +140,22 @@ public class Controller {
     }
 
     @PostMapping("/client/logout")
-    public ResponseEntity<String> logout(HttpSession session) {
-        if (session != null) {
-            session.invalidate();
-        }
+    public ResponseEntity<String> logout(HttpServletRequest request) {
         try {
-            restTemplate.postForEntity(URL_CLIENT + "/client/logout", null, String.class);
-            return ResponseEntity.ok("Logged out successfully");
+            // Créer un client HTTP pour appeler l'API REST
+            RestTemplate restTemplate = new RestTemplate();
+
+            // URL de l'API REST de déconnexion
+            String apiRestUrl = URL_CLIENT + "/client/logout"; // Ajustez selon votre configuration
+
+            // Relayer la requête et récupérer la réponse
+            ResponseEntity<String> response = restTemplate.postForEntity(apiRestUrl, null, String.class);
+
+            // Retourner la réponse à l'utilisateur
+            return response;
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error during logout: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur de déconnexion");
         }
     }
-
-    @PostMapping("/client/logout")
-public ResponseEntity<String> logout(HttpServletRequest request) {
-  try {
-    // Créer un client HTTP pour appeler l'API REST
-    RestTemplate restTemplate = new RestTemplate();
-    
-    // URL de l'API REST de déconnexion
-    String apiRestUrl = "http://localhost:8081/logout"; // Ajustez selon votre configuration
-    
-    // Relayer la requête et récupérer la réponse
-    ResponseEntity<String> response = restTemplate.postForEntity(apiRestUrl, null, String.class);
-    
-    // Retourner la réponse à l'utilisateur
-    return response;
-  } catch (Exception e) {
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur de déconnexion");
-  }
-}
 
 }

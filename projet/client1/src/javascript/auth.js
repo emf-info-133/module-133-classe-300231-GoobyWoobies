@@ -43,7 +43,7 @@ function logout() {
   xhr.withCredentials = true;
   xhr.onload = function() {
     if (xhr.status === 200) {
-      window.location.href = "/index.html";
+      window.location.href = "../index.html";
     } else {
       console.error("Erreur lors de la déconnexion:", xhr.status);
     }
