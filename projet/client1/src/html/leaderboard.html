@@ -1,461 +1,148 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEO Leaderboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss-animate@1.0.1.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <style>
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CodeQuizz - Leaderboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tailwindcss-animated@1.0.0/src/index.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dark: {
+              900: '#0f1116',
+              800: '#151822',
+              700: '#1c2033',
+              600: '#2c3149'
+            },
+            accent: {
+              primary: '#6366f1',
+              secondary: '#8b5cf6'
+            }
+          }
         }
-        @keyframes pulseGlow {
-            0%, 100% { box-shadow: 0 0 10px rgba(236, 72, 153, 0.5); }
-            50% { box-shadow: 0 0 20px rgba(236, 72, 153, 0.8), 0 0 30px rgba(139, 92, 246, 0.6); }
+      }
+    }
+ 
+    // Fonction pour gérer la déconnexion
+    function logout() {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "http://localhost:8080/client/logout", true);
+      xhr.withCredentials = true;
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          window.location.href = "/index.html";
+        } else {
+          console.error("Erreur lors de la déconnexion:", xhr.status);
         }
-        @keyframes textShine {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 100% 50%; }
-        }
-        @keyframes neonBorder {
-            0% { border-color: rgba(236, 72, 153, 0.7); }
-            33% { border-color: rgba(139, 92, 246, 0.7); }
-            66% { border-color: rgba(59, 130, 246, 0.7); }
-            100% { border-color: rgba(236, 72, 153, 0.7); }
-        }
-        
-        .neon-text {
-            background: linear-gradient(90deg, #ec4899, #8b5cf6, #3b82f6, #8b5cf6, #ec4899);
-            background-size: 300% 300%;
-            animation: textShine 6s ease infinite;
-        }
-        
-        .holographic-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
-            backdrop-filter: blur(10px);
-            border: 1px solid;
-            animation: neonBorder 8s linear infinite;
-        }
-        
-        .rank-1 { background: linear-gradient(135deg, rgba(253, 230, 138, 0.15) 0%, rgba(234, 179, 8, 0.3) 100%); }
-        .rank-2 { background: linear-gradient(135deg, rgba(209, 213, 219, 0.15) 0%, rgba(156, 163, 175, 0.3) 100%); }
-        .rank-3 { background: linear-gradient(135deg, rgba(180, 83, 9, 0.15) 0%, rgba(124, 45, 18, 0.3) 100%); }
-        
-        #particles-js {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: 0;
-        }
-        
-        .content-wrapper {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .cyberpunk-btn {
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s;
-        }
-        
-        .cyberpunk-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: all 0.5s;
-        }
-        
-        .cyberpunk-btn:hover::before {
-            left: 100%;
-        }
-    </style>
+      };
+      xhr.onerror = function() {
+        console.error("Erreur réseau lors de la déconnexion");
+      };
+      xhr.send();
+    }
+  </script>
 </head>
-<body class="bg-black text-gray-100 min-h-screen font-mono overflow-x-hidden">
-    <div id="particles-js"></div>
-    <div class="content-wrapper max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-        <!-- Header with animated title and buttons -->
-        <header class="flex flex-col items-center mb-12 animate-fade-in">
-            <div class="relative group mb-8">
-                <div class="absolute -inset-1 bg-gradient-to-r from-pink-600 via-purple-500 to-blue-400 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-200 animate-pulse"></div>
-                <h1 class="relative text-6xl font-extrabold text-transparent bg-clip-text neon-text py-2 px-4">
-                    NEO LEADERBOARD
-                </h1>
-            </div>
-            
-            <div class="flex space-x-4 mb-8">
-                <button class="cyberpunk-btn bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-6 rounded-full transition-all duration-300 transform hover:scale-105 border-2 border-pink-400">
-                    <span class="relative z-10">NEW CHALLENGE</span>
-                </button>
-                <button class="cyberpunk-btn bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full transition-all duration-300 transform hover:scale-105 border-2 border-purple-400">
-                    <span class="relative z-10">INVITE FRIENDS</span>
-                </button>
-            </div>
-            
-            <div class="w-full max-w-2xl h-1 bg-gradient-to-r from-transparent via-pink-500 to-transparent mb-8 rounded-full"></div>
-        </header>
-
-        <!-- Main leaderboard with holographic effect -->
-        <main class="relative">
-            <div class="holographic-card rounded-2xl overflow-hidden shadow-2xl border border-opacity-30">
-                <!-- Table header with glass morphism effect -->
-                <div class="bg-gradient-to-r from-purple-900/80 to-blue-900/80 backdrop-blur-md border-b border-gray-700">
-                    <div class="grid grid-cols-12 py-4 px-6 text-gray-300 font-bold tracking-wider">
-                        <div class="col-span-1 flex items-center">
-                            <span class="text-xs uppercase">RANK</span>
-                        </div>
-                        <div class="col-span-7 flex items-center">
-                            <span class="text-xs uppercase">PLAYER</span>
-                        </div>
-                        <div class="col-span-2 flex items-center justify-end">
-                            <span class="text-xs uppercase">SCORE</span>
-                        </div>
-                        <div class="col-span-2 flex items-center justify-end">
-                            <span class="text-xs uppercase">LEVEL</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Players list with animated entries -->
-                <div class="divide-y divide-gray-700/50">
-                    <!-- Rank 1 - Gold -->
-                    <div class="rank-1 group transform transition-all duration-300 hover:scale-[1.01] hover:shadow-lg">
-                        <div class="grid grid-cols-12 py-5 px-6 items-center relative overflow-hidden animate-float">
-                            <div class="absolute inset-0 bg-gradient-to-r from-yellow-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                            <div class="col-span-1 flex items-center z-10">
-                                <div class="w-10 h-10 flex items-center justify-center bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full shadow-lg">
-                                    <span class="font-bold text-gray-900">1</span>
-                                </div>
-                            </div>
-                            <div class="col-span-7 flex items-center space-x-4 z-10">
-                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-200 to-yellow-600 flex items-center justify-center overflow-hidden border-2 border-yellow-400 shadow-lg">
-                                    <span class="text-xl font-bold text-gray-900">👑</span>
-                                </div>
-                                <div>
-                                    <div class="font-bold text-yellow-300 group-hover:text-white transition-colors">CyberNinja</div>
-                                    <div class="text-xs text-yellow-200/70 flex items-center">
-                                        <span class="w-2 h-2 bg-green-500 rounded-full mr-1 animate-pulse"></span>
-                                        Online
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-span-2 flex items-center justify-end z-10">
-                                <div class="text-right">
-                                    <div class="font-bold text-yellow-300">9850</div>
-                                    <div class="text-xs text-yellow-200/70">+125 today</div>
-                                </div>
-                            </div>
-                            <div class="col-span-2 flex items-center justify-end z-10">
-                                <div class="flex items-center">
-                                    <div class="w-24 h-2 bg-gray-700 rounded-full mr-2">
-                                        <div class="h-full bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full" style="width: 92%"></div>
-                                    </div>
-                                    <span class="text-xs font-bold text-yellow-300">92</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Rank 2 - Silver -->
-                    <div class="rank-2 group transform transition-all duration-300 hover:scale-[1.01] hover:shadow-lg">
-                        <div class="grid grid-cols-12 py-5 px-6 items-center relative overflow-hidden animate-float" style="animation-delay: 0.1s">
-                            <div class="absolute inset-0 bg-gradient-to-r from-gray-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                            <div class="col-span-1 flex items-center z-10">
-                                <div class="w-10 h-10 flex items-center justify-center bg-gradient-to-br from-gray-300 to-gray-500 rounded-full shadow-lg">
-                                    <span class="font-bold text-gray-900">2</span>
-                                </div>
-                            </div>
-                            <div class="col-span-7 flex items-center space-x-4 z-10">
-                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-gray-200 to-gray-400 flex items-center justify-center overflow-hidden border-2 border-gray-300 shadow-lg">
-                                    <span class="text-xl font-bold text-gray-900">⚡</span>
-                                </div>
-                                <div>
-                                    <div class="font-bold text-gray-300 group-hover:text-white transition-colors">QuantumX</div>
-                                    <div class="text-xs text-gray-400/70 flex items-center">
-                                        <span class="w-2 h-2 bg-green-500 rounded-full mr-1 animate-pulse"></span>
-                                        Online
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-span-2 flex items-center justify-end z-10">
-                                <div class="text-right">
-                                    <div class="font-bold text-gray-300">8720</div>
-                                    <div class="text-xs text-gray-400/70">+80 today</div>
-                                </div>
-                            </div>
-                            <div class="col-span-2 flex items-center justify-end z-10">
-                                <div class="flex items-center">
-                                    <div class="w-24 h-2 bg-gray-700 rounded-full mr-2">
-                                        <div class="h-full bg-gradient-to-r from-gray-300 to-gray-500 rounded-full" style="width: 87%"></div>
-                                    </div>
-                                    <span class="text-xs font-bold text-gray-300">87</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Rank 3 - Bronze -->
-                    <div class="rank-3 group transform transition-all duration-300 hover:scale-[1.01] hover:shadow-lg">
-                        <div class="grid grid-cols-12 py-5 px-6 items-center relative overflow-hidden animate-float" style="animation-delay: 0.2s">
-                            <div class="absolute inset-0 bg-gradient-to-r from-amber-700/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                            <div class="col-span-1 flex items-center z-10">
-                                <div class="w-10 h-10 flex items-center justify-center bg-gradient-to-br from-amber-600 to-amber-800 rounded-full shadow-lg">
-                                    <span class="font-bold text-gray-100">3</span>
-                                </div>
-                            </div>
-                            <div class="col-span-7 flex items-center space-x-4 z-10">
-                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center overflow-hidden border-2 border-amber-500 shadow-lg">
-                                    <span class="text-xl font-bold text-gray-100">🔥</span>
-                                </div>
-                                <div>
-                                    <div class="font-bold text-amber-400 group-hover:text-white transition-colors">NeonPhantom</div>
-                                    <div class="text-xs text-amber-500/70 flex items-center">
-                                        <span class="w-2 h-2 bg-green-500 rounded-full mr-1 animate-pulse"></span>
-                                        Online
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-span-2 flex items-center justify-end z-10">
-                                <div class="text-right">
-                                    <div class="font-bold text-amber-400">7650</div>
-                                    <div class="text-xs text-amber-500/70">+65 today</div>
-                                </div>
-                            </div>
-                            <div class="col-span-2 flex items-center justify-end z-10">
-                                <div class="flex items-center">
-                                    <div class="w-24 h-2 bg-gray-700 rounded-full mr-2">
-                                        <div class="h-full bg-gradient-to-r from-amber-500 to-amber-700 rounded-full" style="width: 76%"></div>
-                                    </div>
-                                    <span class="text-xs font-bold text-amber-400">76</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Rank 4 -->
-                    <div class="group transform transition-all duration-300 hover:scale-[1.01] hover:bg-gray-800/50">
-                        <div class="grid grid-cols-12 py-4 px-6 items-center relative overflow-hidden animate-float" style="animation-delay: 0.3s">
-                            <div class="col-span-1 flex items-center z-10">
-                                <div class="w-8 h-8 flex items-center justify-center bg-gradient-to-br from-purple-600 to-blue-600 rounded-full shadow">
-                                    <span class="font-bold text-gray-100 text-sm">4</span>
-                                </div>
-                            </div>
-                            <div class="col-span-7 flex items-center space-x-3 z-10">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center overflow-hidden border-2 border-purple-400 shadow">
-                                    <span class="text-lg font-bold text-gray-100">👾</span>
-                                </div>
-                                <div>
-                                    <div class="font-bold text-purple-300 group-hover:text-white transition-colors">ByteGlitch</div>
-                                    <div class="text-xs text-purple-400/70 flex items-center">
-                                        <span class="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
-                                        Online
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-span-2 flex items-center justify-end z-10">
-                                <div class="text-right">
-                                    <div class="font-bold">6540</div>
-                                    <div class="text-xs text-gray-500">+42 today</div>
-                                </div>
-                            </div>
-                            <div class="col-span-2 flex items-center justify-end z-10">
-                                <div class="flex items-center">
-                                    <div class="w-20 h-1.5 bg-gray-700 rounded-full mr-2">
-                                        <div class="h-full bg-gradient-to-r from-purple-500 to-blue-500 rounded-full" style="width: 65%"></div>
-                                    </div>
-                                    <span class="text-xs font-bold text-gray-400">65</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Rank 5 -->
-                    <div class="group transform transition-all duration-300 hover:scale-[1.01] hover:bg-gray-800/50">
-                        <div class="grid grid-cols-12 py-4 px-6 items-center relative overflow-hidden animate-float" style="animation-delay: 0.4s">
-                            <div class="col-span-1 flex items-center z-10">
-                                <div class="w-8 h-8 flex items-center justify-center bg-gradient-to-br from-pink-600 to-red-600 rounded-full shadow">
-                                    <span class="font-bold text-gray-100 text-sm">5</span>
-                                </div>
-                            </div>
-                            <div class="col-span-7 flex items-center space-x-3 z-10">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-red-500 flex items-center justify-center overflow-hidden border-2 border-pink-400 shadow">
-                                    <span class="text-lg font-bold text-gray-100">🦾</span>
-                                </div>
-                                <div>
-                                    <div class="font-bold text-pink-300 group-hover:text-white transition-colors">CyberValkyrie</div>
-                                    <div class="text-xs text-pink-400/70 flex items-center">
-                                        <span class="w-2 h-2 bg-yellow-500 rounded-full mr-1"></span>
-                                        Idle
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-span-2 flex items-center justify-end z-10">
-                                <div class="text-right">
-                                    <div class="font-bold">5870</div>
-                                    <div class="text-xs text-gray-500">+38 today</div>
-                                </div>
-                            </div>
-                            <div class="col-span-2 flex items-center justify-end z-10">
-                                <div class="flex items-center">
-                                    <div class="w-20 h-1.5 bg-gray-700 rounded-full mr-2">
-                                        <div class="h-full bg-gradient-to-r from-pink-500 to-red-500 rounded-full" style="width: 58%"></div>
-                                    </div>
-                                    <span class="text-xs font-bold text-gray-400">58</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Floating badges -->
-            <div class="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-pink-600/20 blur-3xl animate-pulse"></div>
-            <div class="absolute -bottom-20 -left-20 w-60 h-60 rounded-full bg-purple-600/20 blur-3xl animate-pulse" style="animation-delay: 1s"></div>
-        </main>
+<body class="bg-gradient-to-br from-dark-900 to-dark-800 font-sans min-h-screen text-gray-200">
+  <!-- Éléments décoratifs en arrière-plan -->
+  <div class="fixed inset-0 z-0 overflow-hidden">
+    <div class="absolute top-10 left-10 w-96 h-96 bg-accent-primary/20 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-10 right-10 w-96 h-96 bg-accent-primary/10 rounded-full blur-3xl"></div>
+  </div>
+ 
+  <div class="relative z-10">
+    <header class="backdrop-blur-md bg-dark-800/60 border-b border-white/10 text-white p-4 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <h1 class="text-2xl font-bold tracking-tighter bg-gradient-to-r from-accent-primary to-accent-secondary text-transparent bg-clip-text">CodeQuizz</h1>
+        <span class="text-xs px-2 py-1 rounded bg-accent-primary/20 text-accent-primary border border-accent-primary/20">Leaderboard</span>
+      </div>
+      <div class="flex gap-4 items-center">
+        <span id="username" class="text-gray-300 px-3 py-1 rounded-full bg-dark-700/50 backdrop-blur-sm border border-white/10">
+          <span id="current-username">Utilisateur</span>
+        </span>
+        <button onclick="logout()" class="text-sm bg-dark-700/80 hover:bg-dark-600/90 px-4 py-1.5 rounded-full shadow-lg shadow-accent-primary/10 transition-all duration-300 hover:scale-105 backdrop-blur-sm border border-white/10">
+          Déconnexion
+        </button>
+      </div>
+    </header>
+ 
+    <main class="container mx-auto py-8 px-4">
+      <div class="backdrop-blur-lg bg-dark-700/30 border border-white/10 rounded-xl shadow-lg p-6 max-w-4xl mx-auto">
+        <div class="flex justify-between items-center mb-8">
+          <h2 class="text-2xl font-semibold text-white">Top 10 des joueurs</h2>
+          <div class="flex gap-2">
+            <button id="refresh-btn" class="text-sm bg-dark-700/80 hover:bg-dark-600/90 px-4 py-1.5 rounded-full shadow-lg shadow-accent-primary/10 transition-all duration-300 hover:scale-105 backdrop-blur-sm border border-white/10 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Actualiser
+            </button>
+          </div>
+        </div>
         
-        <!-- Footer with animated stats -->
-        <footer class="mt-16 text-center animate-fade-in">
-            <div class="inline-flex items-center space-x-8 bg-gray-900/50 backdrop-blur-md rounded-full px-8 py-4 border border-gray-700/50">
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">24,589</div>
-                    <div class="text-xs text-gray-400 uppercase tracking-wider">Total Players</div>
-                </div>
-                <div class="h-8 w-px bg-gradient-to-b from-transparent via-gray-500 to-transparent"></div>
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">1,287</div>
-                    <div class="text-xs text-gray-400 uppercase tracking-wider">Active Today</div>
-                </div>
-                <div class="h-8 w-px bg-gradient-to-b from-transparent via-gray-500 to-transparent"></div>
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-400">42</div>
-                    <div class="text-xs text-gray-400 uppercase tracking-wider">New Records</div>
-                </div>
+        <!-- Tableau du leaderboard -->
+        <div class="overflow-hidden rounded-xl border border-white/10 bg-dark-600/20 backdrop-blur-sm">
+          <table class="min-w-full divide-y divide-white/10">
+            <thead class="bg-dark-700/50">
+              <tr>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Rang</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Utilisateur</th>
+                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Score</th>
+                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Quiz complétés</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-body" class="divide-y divide-white/5">
+              <!-- Les données du leaderboard seront injectées ici via JavaScript -->
+              <tr>
+                <td colspan="4" class="px-6 py-12 text-center text-gray-400">
+                  <div class="flex flex-col items-center justify-center">
+                    <svg class="animate-spin h-8 w-8 text-accent-primary mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Chargement des données...</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Section pour votre classement -->
+        <div class="mt-8 p-4 rounded-lg bg-accent-primary/10 border border-accent-primary/20">
+          <h3 class="font-medium text-white mb-2">Votre classement</h3>
+          <div id="user-ranking" class="flex justify-between items-center">
+            <div class="flex items-center gap-3">
+              <span id="user-rank" class="text-2xl font-bold text-accent-primary">--</span>
+              <span id="user-name" class="text-gray-200">--</span>
             </div>
-            
-            <div class="mt-8 text-gray-500 text-sm">
-                <p>Last updated: <span class="text-purple-300">Just now</span> • Next update in: <span class="text-pink-300">59s</span></p>
+            <div class="flex items-center gap-6">
+              <div>
+                <p class="text-xs text-gray-400">Score</p>
+                <p id="user-score" class="font-medium text-white">--</p>
+              </div>
+              <div>
+                <p class="text-xs text-gray-400">Quiz complétés</p>
+                <p id="user-quizzes" class="font-medium text-white">--</p>
+              </div>
             </div>
-        </footer>
-    </div>
-
-    <script>
-        // Initialize particles.js
-        document.addEventListener('DOMContentLoaded', function() {
-            particlesJS('particles-js', {
-                "particles": {
-                    "number": {
-                        "value": 80,
-                        "density": {
-                            "enable": true,
-                            "value_area": 800
-                        }
-                    },
-                    "color": {
-                        "value": ["#ec4899", "#8b5cf6", "#3b82f6"]
-                    },
-                    "shape": {
-                        "type": "circle",
-                        "stroke": {
-                            "width": 0,
-                            "color": "#000000"
-                        },
-                        "polygon": {
-                            "nb_sides": 5
-                        }
-                    },
-                    "opacity": {
-                        "value": 0.5,
-                        "random": true,
-                        "anim": {
-                            "enable": true,
-                            "speed": 1,
-                            "opacity_min": 0.1,
-                            "sync": false
-                        }
-                    },
-                    "size": {
-                        "value": 3,
-                        "random": true,
-                        "anim": {
-                            "enable": true,
-                            "speed": 2,
-                            "size_min": 0.1,
-                            "sync": false
-                        }
-                    },
-                    "line_linked": {
-                        "enable": true,
-                        "distance": 150,
-                        "color": "#8b5cf6",
-                        "opacity": 0.3,
-                        "width": 1
-                    },
-                    "move": {
-                        "enable": true,
-                        "speed": 1,
-                        "direction": "none",
-                        "random": true,
-                        "straight": false,
-                        "out_mode": "out",
-                        "bounce": false,
-                        "attract": {
-                            "enable": true,
-                            "rotateX": 600,
-                            "rotateY": 1200
-                        }
-                    }
-                },
-                "interactivity": {
-                    "detect_on": "canvas",
-                    "events": {
-                        "onhover": {
-                            "enable": true,
-                            "mode": "grab"
-                        },
-                        "onclick": {
-                            "enable": true,
-                            "mode": "push"
-                        },
-                        "resize": true
-                    },
-                    "modes": {
-                        "grab": {
-                            "distance": 140,
-                            "line_linked": {
-                                "opacity": 0.8
-                            }
-                        },
-                        "push": {
-                            "particles_nb": 4
-                        }
-                    }
-                },
-                "retina_detect": true
-            });
-            
-            // Animate the countdown
-            let seconds = 59;
-            const countdownElement = document.querySelector('.text-pink-300');
-            
-            const countdown = setInterval(() => {
-                countdownElement.textContent = `${seconds}s`;
-                seconds--;
-                
-                if (seconds < 0) {
-                    seconds = 59;
-                    // Here you could add code to refresh the leaderboard data
-                }
-            }, 1000);
-        });
-    </script>
+          </div>
+        </div>
+        
+        <!-- Bouton retour -->
+        <div class="mt-6 flex justify-center">
+          <a href="./main.html" class="py-2 px-6 bg-dark-600/50 text-gray-300 font-medium rounded-lg border border-white/10 hover:bg-dark-600/70 transition duration-300 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Retour à l'accueil
+          </a>
+        </div>
+      </div>
+    </main>
+  </div>
 </body>
+<script src="../javascript/leaderboard.js" defer></script>
 </html>
