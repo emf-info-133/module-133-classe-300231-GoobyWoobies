@@ -4,7 +4,12 @@ let currentQuestionIndex = 0;
 let score = 0;
 let timer;
 let timeLeft = 15;
-const API_BASE_URL = 'http://localhost:8080'; // Aligné avec votre fichier categories.js
+// N'utilisez qu'une seule déclaration de API_BASE_URL
+// Si cette variable est déjà définie dans un autre fichier inclus avant celui-ci,
+// utilisez-la plutôt que de la redéclarer
+if (typeof API_BASE_URL === 'undefined') {
+    const API_BASE_URL = 'http://localhost:8080';
+}
 
 // Fonction pour récupérer l'ID de catégorie depuis l'URL
 function getCategoryIdFromUrl() {
@@ -75,6 +80,24 @@ async function startQuiz() {
             quizzData = responseText;
         }
         
+        // Vérifier que quizzData est bien un tableau
+        if (!Array.isArray(quizzData)) {
+            console.error("Le format des données reçues n'est pas un tableau:", quizzData);
+            // Si quizzData est un objet avec des propriétés qui contiennent les questions
+            if (quizzData && typeof quizzData === 'object') {
+                // Essayer de trouver un tableau de questions dans l'objet
+                for (const key in quizzData) {
+                    if (Array.isArray(quizzData[key])) {
+                        quizzData = quizzData[key];
+                        break;
+                    }
+                }
+            } else {
+                // Si on ne peut pas trouver un tableau, créer un tableau avec l'objet
+                quizzData = [quizzData];
+            }
+        }
+        
         currentQuizz = quizzData;
         
         if (!currentQuizz || currentQuizz.length === 0) {
@@ -82,7 +105,10 @@ async function startQuiz() {
         }
         
         // Masquer les instructions et afficher la première question
-        document.querySelector(".bg-white.p-8").classList.add('hidden');
+        const instructionsElement = document.querySelector(".bg-white.p-8");
+        if (instructionsElement) {
+            instructionsElement.classList.add('hidden');
+        }
         showQuestion();
     } catch (error) {
         console.error("Erreur lors du démarrage du quiz:", error);
@@ -98,6 +124,31 @@ function showQuestion() {
     }
     
     const questionData = currentQuizz[currentQuestionIndex];
+    
+    // Vérifier que les données de la question existent
+    if (!questionData) {
+        console.error("Données de question non disponibles pour l'index", currentQuestionIndex);
+        alert("Données de question non disponibles. Veuillez réessayer.");
+        return;
+    }
+    
+    // Vérifier si tous les champs nécessaires sont présents
+    if (!questionData.texte || !questionData.choix1 || !questionData.choix2 || 
+        !questionData.choix3 || !questionData.choix4 || !questionData.bonneReponse) {
+        console.error("Les données de la question sont incomplètes:", questionData);
+        
+        // Essayer de réparer les données manquantes
+        if (!questionData.texte && questionData.question) {
+            questionData.texte = questionData.question;
+        }
+        
+        // Si toujours des champs manquants, afficher une erreur
+        if (!questionData.texte) {
+            alert("Les données de la question sont incomplètes. Veuillez réessayer.");
+            return;
+        }
+    }
+    
     timeLeft = 15;
     
     const questionHTML = `
@@ -109,20 +160,20 @@ function showQuestion() {
                 </div>
             </div>
             
-            <h3 class="text-xl font-semibold mb-6 text-gray-800">${questionData.texte}</h3>
+            <h3 class="text-xl font-semibold mb-6 text-gray-800">${questionData.texte || questionData.question || "Question sans texte"}</h3>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <button onclick="checkAnswer(1)" class="p-4 bg-gray-100 hover:bg-blue-100 rounded-lg text-left transition-all duration-200 hover:shadow-md">
-                    ${questionData.choix1}
+                    ${questionData.choix1 || "Option 1"}
                 </button>
                 <button onclick="checkAnswer(2)" class="p-4 bg-gray-100 hover:bg-blue-100 rounded-lg text-left transition-all duration-200 hover:shadow-md">
-                    ${questionData.choix2}
+                    ${questionData.choix2 || "Option 2"}
                 </button>
                 <button onclick="checkAnswer(3)" class="p-4 bg-gray-100 hover:bg-blue-100 rounded-lg text-left transition-all duration-200 hover:shadow-md">
-                    ${questionData.choix3}
+                    ${questionData.choix3 || "Option 3"}
                 </button>
                 <button onclick="checkAnswer(4)" class="p-4 bg-gray-100 hover:bg-blue-100 rounded-lg text-left transition-all duration-200 hover:shadow-md">
-                    ${questionData.choix4}
+                    ${questionData.choix4 || "Option 4"}
                 </button>
             </div>
             
@@ -132,16 +183,26 @@ function showQuestion() {
         </div>
     `;
     
-    document.getElementById('question-container').innerHTML = questionHTML;
-    document.getElementById('question-container').classList.remove('hidden');
-    
-    // Démarrer le timer
-    startTimer();
+    const questionContainer = document.getElementById('question-container');
+    if (questionContainer) {
+        questionContainer.innerHTML = questionHTML;
+        questionContainer.classList.remove('hidden');
+        
+        // Démarrer le timer
+        startTimer();
+    } else {
+        console.error("Élément 'question-container' non trouvé dans le DOM");
+    }
 }
 
 // Démarrer le compte à rebours
 function startTimer() {
     const timerBar = document.getElementById('timer-bar');
+    if (!timerBar) {
+        console.error("Élément 'timer-bar' non trouvé");
+        return;
+    }
+    
     timeLeft = 15;
     
     // Réinitialiser la largeur à 100%
@@ -174,7 +235,14 @@ function startTimer() {
 function checkAnswer(selectedAnswer) {
     clearInterval(timer);
     const question = currentQuizz[currentQuestionIndex];
-    const isCorrect = (selectedAnswer === question.bonneReponse);
+    
+    // S'assurer que la bonne réponse est un nombre
+    let correctAnswer = question.bonneReponse;
+    if (typeof correctAnswer === 'string') {
+        correctAnswer = parseInt(correctAnswer);
+    }
+    
+    const isCorrect = (selectedAnswer === correctAnswer);
     
     if (isCorrect) {
         score++;
@@ -186,7 +254,15 @@ function checkAnswer(selectedAnswer) {
 // Afficher le feedback après une réponse
 function showFeedback(isCorrect) {
     const questionData = currentQuizz[currentQuestionIndex];
-    const correctAnswerText = questionData[`choix${questionData.bonneReponse}`];
+    
+    // S'assurer que bonneReponse est un nombre
+    let correctAnswerNum = questionData.bonneReponse;
+    if (typeof correctAnswerNum === 'string') {
+        correctAnswerNum = parseInt(correctAnswerNum);
+    }
+    
+    const correctAnswerKey = `choix${correctAnswerNum}`;
+    const correctAnswerText = questionData[correctAnswerKey] || "Réponse non disponible";
     
     const feedbackHTML = `
         <div class="bg-white rounded-xl shadow-xl p-6 w-full animate-fade-in">
@@ -213,7 +289,12 @@ function showFeedback(isCorrect) {
         </div>
     `;
     
-    document.getElementById('question-container').innerHTML = feedbackHTML;
+    const questionContainer = document.getElementById('question-container');
+    if (questionContainer) {
+        questionContainer.innerHTML = feedbackHTML;
+    } else {
+        console.error("Élément 'question-container' non trouvé");
+    }
 }
 
 // Passer à la question suivante
@@ -269,7 +350,12 @@ function showResults() {
         </div>
     `;
     
-    document.getElementById('question-container').innerHTML = resultsHTML;
+    const questionContainer = document.getElementById('question-container');
+    if (questionContainer) {
+        questionContainer.innerHTML = resultsHTML;
+    } else {
+        console.error("Élément 'question-container' non trouvé");
+    }
 }
 
 // Redémarrer le quiz
@@ -289,11 +375,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const categoryName = urlParams.get('categoryName') || "Quiz";
     
     // Afficher le nom de la catégorie
-    document.getElementById('category-name').textContent = categoryName;
+    const categoryNameElement = document.getElementById('category-name');
+    if (categoryNameElement) {
+        categoryNameElement.textContent = categoryName;
+    }
     
     // Récupérer et afficher le nom d'utilisateur s'il est disponible
     const username = localStorage.getItem('username');
     if (username) {
-        document.getElementById('username').textContent = username;
+        const usernameElement = document.getElementById('username');
+        if (usernameElement) {
+            usernameElement.textContent = username;
+        }
     }
 });
