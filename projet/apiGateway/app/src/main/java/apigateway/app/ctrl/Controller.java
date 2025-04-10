@@ -67,7 +67,7 @@ public class Controller {
             String response = restTemplate.getForObject(apiUrl, String.class, categorieId); // Passer la valeur de
                                                                                             // categorieId ici
             System.out.println("🟢 Réponse reçue: " + response);
-            return ResponseEntity.ok("Quizz : " + response);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             System.err.println("🔴 Erreur lors de l'appel à l'API Admin: " + e.getMessage());
             return ResponseEntity.status(500).body("Erreur: " + e.getMessage());
