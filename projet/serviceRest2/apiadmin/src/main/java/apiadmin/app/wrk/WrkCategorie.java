@@ -28,15 +28,15 @@ public class WrkCategorie {
         }
     }
 
-    public boolean addCategory(String nom) {
+    public String addCategory(String nom) {
         String sql = "INSERT INTO t_categorie (nom) VALUES (?)";
     
         try {
             int result = jdbcTemplate.update(sql, nom);
-            return result > 0;
+            return "true";
         } catch (Exception e) {
             System.err.println("Erreur lors de l'ajout de la catégorie : " + e.getMessage());
-            return false;
+            return "false";
         }
     }
     

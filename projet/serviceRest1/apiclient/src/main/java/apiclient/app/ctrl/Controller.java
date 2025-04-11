@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import apiclient.app.wrk.wrkDBManager;
 import jakarta.servlet.http.HttpSession;
 
@@ -41,7 +44,7 @@ public class Controller {
     }
 
     @GetMapping("/session")
-    public ResponseEntity<String> getCurrentUser(HttpSession session) {
+    public ResponseEntity<String> getCurrentUser() {
         if (Currentsession == null || Currentsession.getAttribute("username") == null) {
             System.out.println("❌ Aucun utilisateur connecté");
             return ResponseEntity.status(401).body("No user logged in");
@@ -53,61 +56,46 @@ public class Controller {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpSession session) {
-        if (session != null) {
-            session.invalidate();
+    public ResponseEntity<String> logout() {
+        System.out.println("ok");
+        if (Currentsession != null) {
+            Currentsession.invalidate();
         }
         return ResponseEntity.ok("Logged out successfully");
     }
 
     @GetMapping("/leaderboard")
-    public ResponseEntity<String> getLeaderboard(HttpSession session) {
+    public ResponseEntity<String> getLeaderboard() {
         try {
+            System.out.println("🔄 Début de la méthode getLeaderboard");
+            
             // Récupérer l'utilisateur connecté
-            String currentUsername = (String) session.getAttribute("username");
+            String currentUsername = (String) Currentsession.getAttribute("username");
+            System.out.println("👤 Username en session: " + currentUsername);
+            
             if (currentUsername == null) {
+                System.out.println("❌ Utilisateur non connecté");
                 return ResponseEntity.badRequest().body("{\"error\": \"Utilisateur non connecté\"}");
             }
-
-            // Récupérer le top 10 des utilisateurs avec le plus de score
-            String sql = "SELECT username, score, quizzes_completed FROM users ORDER BY score DESC LIMIT 10";
-            List<Map<String, Object>> topUsers = jdbcTemplate.queryForList(sql);
-
-            // Récupérer les informations de l'utilisateur actuel
-            String userSql = "SELECT username, score, quizzes_completed, " +
-                    "(SELECT COUNT(*) + 1 FROM users u2 WHERE u2.score > u1.score) AS rank " +
-                    "FROM users u1 WHERE username = ?";
-            Map<String, Object> currentUser = jdbcTemplate.queryForMap(userSql, currentUsername);
-
-            // Construire la réponse JSON
-            StringBuilder jsonResponse = new StringBuilder();
-            jsonResponse.append("{\"leaderboard\":[");
-
-            boolean first = true;
-            for (Map<String, Object> user : topUsers) {
-                if (!first) {
-                    jsonResponse.append(",");
-                }
-                first = false;
-
-                jsonResponse.append("{");
-                jsonResponse.append("\"username\":\"").append(user.get("username")).append("\",");
-                jsonResponse.append("\"score\":").append(user.get("score")).append(",");
-                jsonResponse.append("\"quizzesCompleted\":").append(user.get("quizzes_completed"));
-                jsonResponse.append("}");
+    
+            // Appeler le service pour récupérer le leaderboard
+            System.out.println("🔄 Récupération du leaderboard depuis la base de données...");
+            Map<String, Object> leaderboardData = dbManager.getLeaderboard(currentUsername);
+    
+            if (leaderboardData == null) {
+                System.out.println("❌ Échec de récupération des données du leaderboard");
+                return ResponseEntity.badRequest().body("{\"error\": \"Erreur lors de la récupération des données\"}");
             }
-
-            jsonResponse.append("],\"currentUser\":{");
-            jsonResponse.append("\"username\":\"").append(currentUser.get("username")).append("\",");
-            jsonResponse.append("\"score\":").append(currentUser.get("score")).append(",");
-            jsonResponse.append("\"quizzesCompleted\":").append(currentUser.get("quizzes_completed")).append(",");
-            jsonResponse.append("\"rank\":").append(currentUser.get("rank"));
-            jsonResponse.append("}}");
-
-            return ResponseEntity.ok(jsonResponse.toString());
-
+    
+            System.out.println("✅ Leaderboard récupéré avec succès");
+            // Retourner la réponse JSON
+            return ResponseEntity.ok(new ObjectMapper().writeValueAsString(leaderboardData));
+    
         } catch (Exception e) {
-            // En cas d'erreur, retourner une erreur avec un message
+            // En cas d'erreur, afficher l'erreur complète
+            System.out.println("❌ Exception dans /leaderboard: " + e.getMessage());
+            e.printStackTrace();
+            // Retourner une erreur avec un message
             return ResponseEntity.badRequest().body("{\"error\": \"" + e.getMessage() + "\"}");
         }
     }
@@ -119,28 +107,53 @@ public class Controller {
             System.out.println("❌ Tentative d'enregistrement de score sans être connecté");
             return ResponseEntity.status(401).body("Utilisateur non connecté");
         }
-        
+
         String username = (String) Currentsession.getAttribute("username");
-        
+
         // Récupérer les données du score
         Integer score = (Integer) scoreData.get("score");
-        Integer totalQuestions = (Integer) scoreData.get("totalQuestions");
-        Integer categorieId = (Integer) scoreData.get("categorieId");
-        
+
         // Vérifier que les données nécessaires sont présentes
-        if (score == null || totalQuestions == null || categorieId == null) {
+        if (score == null) {
             System.out.println("❌ Données incomplètes pour l'enregistrement du score");
             return ResponseEntity.badRequest().body("Données incomplètes");
         }
-        
-        System.out.println("🔍 Enregistrement du score pour: " + username + ", Score: " + score + "/" + totalQuestions);
-        
-        boolean success = dbManager.saveUserScore(username, score, totalQuestions, categorieId);
-        
+
+        System.out.println("🔍 Enregistrement du score pour: " + username + ", Score: " + score);
+
+        boolean success = dbManager.saveUserScore(username, score);
+
         if (success) {
             return ResponseEntity.ok("Score enregistré avec succès");
         } else {
             return ResponseEntity.status(500).body("Erreur lors de l'enregistrement du score");
         }
     }
+
+
+    @PostMapping("/register")
+    public ResponseEntity<Map<String, String>> register(@RequestBody Map<String, String> credentials) {
+        String username = credentials.get("username");
+        String password = credentials.get("password");
+ 
+        System.out.println("🔍 Tentative d'inscription pour: " + username);
+ 
+        // Vérifier si l'utilisateur existe déjà
+        if (dbManager.userExists(username)) {
+            System.out.println("❌ Utilisateur existe déjà: " + username);
+            return ResponseEntity.status(409).body(Map.of("message", "Ce nom d'utilisateur est déjà pris"));
+        }
+ 
+        // Créer le nouvel utilisateur
+        boolean success = dbManager.createUser(username, password);
+ 
+        if (success) {
+            System.out.println("✅ Utilisateur créé avec succès: " + username);
+            return ResponseEntity.ok(Map.of("message", "Inscription réussie"));
+        } else {
+            System.out.println("❌ Erreur lors de la création de l'utilisateur");
+            return ResponseEntity.status(500).body(Map.of("message", "Erreur lors de l'inscription"));
+        }
+    }
+
 }

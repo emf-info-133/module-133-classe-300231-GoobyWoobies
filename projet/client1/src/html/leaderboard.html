@@ -60,7 +60,7 @@
       </div>
       <div class="flex gap-4 items-center">
         <span id="username" class="text-gray-300 px-3 py-1 rounded-full bg-dark-700/50 backdrop-blur-sm border border-white/10">
-          <span id="current-username">Utilisateur</span>
+          <span id="current-username">Chargement...</span>
         </span>
         <button onclick="logout()" class="text-sm bg-dark-700/80 hover:bg-dark-600/90 px-4 py-1.5 rounded-full shadow-lg shadow-accent-primary/10 transition-all duration-300 hover:scale-105 backdrop-blur-sm border border-white/10">
           Déconnexion
@@ -90,7 +90,6 @@
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Rang</th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Utilisateur</th>
                 <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Score</th>
-                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Quiz complétés</th>
               </tr>
             </thead>
             <tbody id="leaderboard-body" class="divide-y divide-white/5">
@@ -115,17 +114,13 @@
           <h3 class="font-medium text-white mb-2">Votre classement</h3>
           <div id="user-ranking" class="flex justify-between items-center">
             <div class="flex items-center gap-3">
-              <span id="user-rank" class="text-2xl font-bold text-accent-primary">--</span>
-              <span id="user-name" class="text-gray-200">--</span>
+              <span id="user-rank" class="text-xl font-bold text-accent-primary">--</span>
+              <span id="user-name" class="text-gray-200 text-xl">--</span>
             </div>
             <div class="flex items-center gap-6">
               <div>
                 <p class="text-xs text-gray-400">Score</p>
                 <p id="user-score" class="font-medium text-white">--</p>
-              </div>
-              <div>
-                <p class="text-xs text-gray-400">Quiz complétés</p>
-                <p id="user-quizzes" class="font-medium text-white">--</p>
               </div>
             </div>
           </div>
@@ -145,4 +140,5 @@
   </div>
 </body>
 <script src="../javascript/leaderboard.js" defer></script>
+<script src="../javascript/session.js" defer></script>
 </html>

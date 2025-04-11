@@ -1,6 +1,8 @@
 package apiadmin.app.ctrl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,15 +36,22 @@ public class Controller {
     }
 
     @PostMapping("/addCategory")
-    public ResponseEntity<String> addCategory(@RequestBody Categorie categorie) {
-        boolean isAdded = wrkCategorie.addCategory(categorie.getNom());
+public ResponseEntity<Map<String, String>> addCategory(@RequestBody Categorie categorie) {
+    String isAdded = wrkCategorie.addCategory(categorie.getNom());
 
-        if (isAdded) {
-            return ResponseEntity.ok("Catégorie ajoutée avec succès !");
-        } else {
-            return ResponseEntity.status(500).body("Erreur lors de l'ajout de la catégorie");
-        }
+    // Créer une map pour la réponse JSON
+    Map<String, String> response = new HashMap<>();
+    if ("true".equals(isAdded)) {
+        response.put("status", "success");
+        response.put("message", "Catégorie ajoutée avec succès !");
+        return ResponseEntity.ok(response);  // Envoie la réponse JSON de succès
+    } else {
+        response.put("status", "error");
+        response.put("message", "Erreur lors de l'ajout de la catégorie");
+        return ResponseEntity.status(500).body(response);  // Envoie la réponse JSON d'erreur
     }
+}
+
 
     @PostMapping("/addQuestion")
     public ResponseEntity<String> addQuestion(@RequestBody Question question) {

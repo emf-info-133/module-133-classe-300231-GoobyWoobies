@@ -169,7 +169,7 @@ function endQuiz(score, total) {
             <div class="text-lg mb-8">
                 ${getResultMessage(score, total)}
             </div>
-            <button onclick="window.location.href='categories.html'" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors">
+            <button onclick="window.location.href='main.html'" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors">
                 Retour aux catégories
             </button>
         </div>

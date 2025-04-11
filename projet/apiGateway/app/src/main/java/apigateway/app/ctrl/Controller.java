@@ -48,7 +48,9 @@ public class Controller {
             String response = restTemplate.postForObject(apiUrl, categorie, String.class);
 
             System.out.println("🟢 Réponse reçue: " + response);
-            return ResponseEntity.ok("Category : " + response);
+            return ResponseEntity.ok(response);
+            
+            
         } catch (Exception e) {
             System.err.println("🔴 Erreur lors de l'appel à l'API Admin: " + e.getMessage());
             return ResponseEntity.status(500).body("Erreur: " + e.getMessage());
@@ -142,14 +144,11 @@ public class Controller {
     @PostMapping("/client/logout")
     public ResponseEntity<String> logout(HttpServletRequest request) {
         try {
-            // Créer un client HTTP pour appeler l'API REST
-            RestTemplate restTemplate = new RestTemplate();
-
             // URL de l'API REST de déconnexion
-            String apiRestUrl = "http://localhost:8081/logout"; // Ajustez selon votre configuration
+            String apiUrl = URL_CLIENT + "/client/logout"; // Ajustez selon votre configuration
 
             // Relayer la requête et récupérer la réponse
-            ResponseEntity<String> response = restTemplate.postForEntity(apiRestUrl, null, String.class);
+            ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, request, String.class);
 
             // Retourner la réponse à l'utilisateur
             return response;
@@ -158,7 +157,7 @@ public class Controller {
         }
     }
 
-    @GetMapping("/client/GetLeaderboard")
+    @GetMapping("/client/getLeaderboard")
     public ResponseEntity<String> getLeaderboard(HttpServletRequest request) {
         try {
             // Relayer la requête à l'API REST
@@ -188,6 +187,19 @@ public class Controller {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Erreur lors de l'enregistrement du score: " + e.getMessage());
         }
+    }
+
+    @PostMapping("/client/register")
+    public ResponseEntity<String> register(@RequestBody Map<String, String> credentials) {
+        String apiUrl = URL_CLIENT + "/client/register";
+        try {
+            System.out.println("🔵 Envoi de requête d'inscription à " + apiUrl);
+            ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, credentials, String.class);
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } catch (Exception e) {
+            System.out.println("🔴 Erreur lors de l'appel à l'API Client: " + e.getMessage());
+            return ResponseEntity.status(500).body("Erreur lors de l'inscription: " + e.getMessage());
+       }
     }
 
 }

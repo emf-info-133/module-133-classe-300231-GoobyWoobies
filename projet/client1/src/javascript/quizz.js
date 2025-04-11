@@ -23,7 +23,7 @@ async function fetchQuizData() {
     const categorieId = getCategoryIdFromUrl();
     if (!categorieId) {
         alert("Aucune catégorie sélectionnée!");
-        window.location.href = "categories.html";
+        window.location.href = "../main.html";
         return;
     }
     
@@ -142,7 +142,7 @@ async function startQuiz() {
                     <div class="flex justify-center">
                         <div class="relative group">
                             <div class="absolute -inset-1 bg-gradient-to-r from-accent-primary to-accent-secondary rounded-full blur opacity-50 group-hover:opacity-100 transition duration-500"></div>
-                            <a href="categories.html" class="relative px-6 py-2 backdrop-blur-lg bg-dark-700/70 border border-white/10 rounded-full shadow-lg text-white font-medium transition-all duration-300 hover:scale-105 flex items-center gap-2 group-hover:text-white overflow-hidden">
+                            <a href="main.html" class="relative px-6 py-2 backdrop-blur-lg bg-dark-700/70 border border-white/10 rounded-full shadow-lg text-white font-medium transition-all duration-300 hover:scale-105 flex items-center gap-2 group-hover:text-white overflow-hidden">
                                 <span class="relative z-10">Retour aux catégories</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -395,7 +395,7 @@ function showResults() {
             <div class="flex justify-center space-x-4">
                 <div class="relative group">
                     <div class="absolute -inset-1 bg-gradient-to-r from-accent-primary to-accent-secondary rounded-full blur opacity-50 group-hover:opacity-100 transition duration-500"></div>
-                    <a href="categories.html" class="relative px-6 py-3 backdrop-blur-lg bg-dark-700/70 border border-white/10 rounded-full shadow-lg text-white font-medium transition-all duration-300 hover:scale-105 flex items-center gap-2 group-hover:text-white overflow-hidden">
+                    <a href="mian.html" class="relative px-6 py-3 backdrop-blur-lg bg-dark-700/70 border border-white/10 rounded-full shadow-lg text-white font-medium transition-all duration-300 hover:scale-105 flex items-center gap-2 group-hover:text-white overflow-hidden">
                         <span class="relative z-10">Retour aux catégories</span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -497,9 +497,7 @@ async function saveScore() {
     
     // Créer l'objet de données pour l'API
     const scoreData = {
-        score: score,
-        totalQuestions: currentQuizz.length,
-        categorieId: parseInt(categorieId)
+        score: score
     };
     
     try {
@@ -575,7 +573,7 @@ function showResults() {
                 <div class="flex justify-center space-x-4">
                     <div class="relative group">
                         <div class="absolute -inset-1 bg-gradient-to-r from-accent-primary to-accent-secondary rounded-full blur opacity-50 group-hover:opacity-100 transition duration-500"></div>
-                        <a href="categories.html" class="relative px-6 py-3 backdrop-blur-lg bg-dark-700/70 border border-white/10 rounded-full shadow-lg text-white font-medium transition-all duration-300 hover:scale-105 flex items-center gap-2 group-hover:text-white overflow-hidden">
+                        <a href="main.html" class="relative px-6 py-3 backdrop-blur-lg bg-dark-700/70 border border-white/10 rounded-full shadow-lg text-white font-medium transition-all duration-300 hover:scale-105 flex items-center gap-2 group-hover:text-white overflow-hidden">
                             <span class="relative z-10">Retour aux catégories</span>
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />

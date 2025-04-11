@@ -3,6 +3,9 @@ package apiclient.app.wrk;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -24,30 +27,20 @@ public class wrkDBManager {
             return false;
         }
     }
-    
+
     /**
-     * Enregistre le score d'un quiz pour un utilisateur
+     * Enregistre ou met à jour le score d'un utilisateur dans la table Utilisateur
+     * 
      * @param username Nom d'utilisateur
-     * @param score Score obtenu
-     * @param totalQuestions Nombre total de questions
-     * @param categorieId ID de la catégorie du quiz
+     * @param score    Score obtenu
      * @return true si l'enregistrement a réussi, false sinon
      */
-    public boolean saveUserScore(String username, int score, int totalQuestions, int categorieId) {
+    public boolean saveUserScore(String username, int score) {
         try {
-            // Calculer le pourcentage
-            int percentage = (int) Math.round(((double) score / totalQuestions) * 100);
-            
-            // Requête SQL pour enregistrer le score
-            String sql = "INSERT INTO user_scores (username, score, total_questions, percentage, categorie_id, date_completed) " +
-                         "VALUES (?, ?, ?, ?, ?, NOW())";
-            
-            jdbcTemplate.update(sql, username, score, totalQuestions, percentage, categorieId);
-            
-            // Mettre à jour le score total de l'utilisateur
-            String updateUserSql = "UPDATE Utilisateur SET score = COALESCE(score, 0) + ?, quizzes_completed = COALESCE(quizzes_completed, 0) + 1 WHERE nom = ?";
+            // Mettre à jour le score de l'utilisateur dans la table Utilisateur
+            String updateUserSql = "UPDATE Utilisateur SET score = COALESCE(score, 0) + ? WHERE nom = ?";
             jdbcTemplate.update(updateUserSql, score, username);
-            
+
             System.out.println("✅ Score enregistré avec succès pour: " + username);
             return true;
         } catch (Exception e) {
@@ -56,4 +49,66 @@ public class wrkDBManager {
             return false;
         }
     }
+
+    /**
+     * Récupère le leaderboard (top 10) et les informations de l'utilisateur
+     * connecté
+     * 
+     * @param currentUsername Nom de l'utilisateur connecté
+     * @return Une Map contenant le leaderboard et les informations de l'utilisateur
+     */
+    public Map<String, Object> getLeaderboard(String currentUsername) {
+        try {
+            System.out.println("📊 Début de récupération du leaderboard pour " + currentUsername);
+
+            // Récupérer le top 10 des utilisateurs avec le plus de score
+            String sql = "SELECT nom AS username, score FROM Utilisateur ORDER BY score DESC LIMIT 10";
+            List<Map<String, Object>> topUsers = jdbcTemplate.queryForList(sql);
+            System.out.println("✅ Top users récupérés: " + topUsers.size() + " utilisateurs");
+
+            // Récupérer les informations de l'utilisateur actuel
+            // Récupérer les informations de l'utilisateur actuel
+            String userSql = "SELECT nom AS username, score, " +
+                    "(SELECT COUNT(*) + 1 FROM Utilisateur u2 WHERE u2.score > u1.score) AS `rank` " +
+                    "FROM Utilisateur u1 WHERE nom = ?";
+            Map<String, Object> currentUser = jdbcTemplate.queryForMap(userSql, currentUsername);
+            System.out.println("✅ Informations utilisateur récupérées pour: " + currentUsername);
+
+            // Construire la réponse dans une Map
+            Map<String, Object> response = new HashMap<>();
+            response.put("leaderboard", topUsers);
+            response.put("currentUser", currentUser);
+
+            System.out.println("📊 Leaderboard généré avec succès");
+            return response;
+
+        } catch (Exception e) {
+            System.out.println("❌ Erreur lors de la récupération du leaderboard: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public boolean userExists(String username) {
+        String sql = "SELECT COUNT(*) FROM Utilisateur WHERE nom = ?";
+        try {
+            Integer count = jdbcTemplate.queryForObject(sql, Integer.class, username);
+            return count != null && count > 0;
+        } catch (Exception e) {
+            System.out.println("❌ Erreur lors de la vérification de l'utilisateur: " + e.getMessage());
+            return false;
+        }
+    }
+ 
+    public boolean createUser(String username, String password) {
+        String sql = "INSERT INTO Utilisateur (nom, mot_de_passe, score) VALUES (?, ?, 0)";
+        try {
+            jdbcTemplate.update(sql, username, password);
+            return true;
+        } catch (Exception e) {
+            System.out.println("❌ Erreur lors de la création de l'utilisateur: " + e.getMessage());
+            return false;
+        }
+    }
+
 }
