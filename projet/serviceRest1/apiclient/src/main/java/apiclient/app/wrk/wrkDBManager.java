@@ -14,17 +14,24 @@ public class wrkDBManager {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public boolean verifyLogin(String username, String password) {
-        String sql = "SELECT COUNT(*) FROM Utilisateur WHERE nom = ? AND mot_de_passe = ?";
+    public Map<String, String> verifyLogin(String username, String password) {
+        String sql = "SELECT role FROM Utilisateur WHERE nom = ? AND mot_de_passe = ?";
         try {
             System.out.println("🔍 Vérification SQL pour: " + username);
-            Integer count = jdbcTemplate.queryForObject(sql, Integer.class, username, password);
-            System.out.println("🔍 Résultat SQL: " + count);
-            return count != null && count > 0;
+            String role = jdbcTemplate.queryForObject(sql, String.class, username, password);
+            System.out.println("🔍 Résultat SQL - Rôle: " + role);
+            
+            if (role != null) {
+                Map<String, String> userInfo = new HashMap<>();
+                userInfo.put("username", username);
+                userInfo.put("role", role);
+                return userInfo;
+            }
+            return null;
         } catch (Exception e) {
             System.out.println("❌ Erreur SQL: " + e.getMessage());
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 
@@ -67,7 +74,6 @@ public class wrkDBManager {
             System.out.println("✅ Top users récupérés: " + topUsers.size() + " utilisateurs");
 
             // Récupérer les informations de l'utilisateur actuel
-            // Récupérer les informations de l'utilisateur actuel
             String userSql = "SELECT nom AS username, score, " +
                     "(SELECT COUNT(*) + 1 FROM Utilisateur u2 WHERE u2.score > u1.score) AS `rank` " +
                     "FROM Utilisateur u1 WHERE nom = ?";
@@ -101,7 +107,8 @@ public class wrkDBManager {
     }
  
     public boolean createUser(String username, String password) {
-        String sql = "INSERT INTO Utilisateur (nom, mot_de_passe, score) VALUES (?, ?, 0)";
+        // Par défaut, les nouveaux utilisateurs ont le rôle "user"
+        String sql = "INSERT INTO Utilisateur (nom, mot_de_passe, score, role) VALUES (?, ?, 0, 'user')";
         try {
             jdbcTemplate.update(sql, username, password);
             return true;
@@ -110,5 +117,4 @@ public class wrkDBManager {
             return false;
         }
     }
-
 }

@@ -11,6 +11,9 @@ function fetchCategories(successCallback, errorCallback) {
     url: `${API_BASE_URL}/admin/getCategories`,
     method: 'GET',
     dataType: 'json',
+    xhrFields: {
+      withCredentials: true  // Important pour envoyer les cookies de session
+    },
     beforeSend: function() {
       console.log('🔵 Envoi de la requête pour récupérer les catégories...');
     },
@@ -28,6 +31,7 @@ function fetchCategories(successCallback, errorCallback) {
     }
   });
 }
+
 
 /**
  * Affiche les catégories sur la page principale

@@ -11,6 +11,9 @@ function fetchCategories(successCallback, errorCallback) {
         url: `${API_BASE_URL}/admin/getCategories`,
         method: 'GET',
         dataType: 'json',
+        xhrFields: {
+            withCredentials: true  // Important pour envoyer les cookies de session
+          },
         beforeSend: function() {
             console.log('🔵 Envoi de la requête pour récupérer les catégories...');
         },
@@ -39,6 +42,9 @@ function fetchCategoryName(categoryId, successCallback, errorCallback) {
         url: `${API_BASE_URL}/admin/getCategories`,
         method: 'GET',
         dataType: 'json',
+        xhrFields: {
+            withCredentials: true  // Important pour envoyer les cookies de session
+          },
         success: function(data) {
             const category = data.find(cat => cat.id == categoryId);
             if (category) {
@@ -67,6 +73,9 @@ function fetchQuestions(categoryId, successCallback, errorCallback) {
         url: `${API_BASE_URL}/admin/startQuizz/${categoryId}`,
         method: 'GET',
         dataType: 'json',
+        xhrFields: {
+            withCredentials: true  // Important pour envoyer les cookies de session
+          },
         success: function(data) {
             if (successCallback && typeof successCallback === 'function') {
                 successCallback(data);

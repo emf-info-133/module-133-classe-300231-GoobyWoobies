@@ -33,6 +33,9 @@ async function fetchQuizData() {
             $.ajax({
                 url: `${API_BASE_URL}/admin/startQuizz/${categorieId}`,
                 method: 'GET',
+                xhrFields: {
+                    withCredentials: true  // Important pour envoyer les cookies de session
+                  },
                 beforeSend: function() {
                     console.log(`🔵 Envoi de requête à /admin/startQuizz/${categorieId}`);
                 },

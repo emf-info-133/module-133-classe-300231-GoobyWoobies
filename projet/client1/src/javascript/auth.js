@@ -18,9 +18,20 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
 
   xhr.onload = function() {
     if (xhr.status === 200) {
-      const username = xhr.responseText;
-      resultEl.textContent = "Bienvenue " + username;
-      window.location.href = "./html/main.html";
+      try {
+        const userData = JSON.parse(xhr.responseText);
+        resultEl.textContent = "Bienvenue " + userData.username;
+        
+        // Redirection basée sur le rôle
+        if (userData.role === "admin") {
+          window.location.href = "../../client2/index.html"; // Page admin
+        } else {
+          window.location.href = "./html/main.html"; // Page utilisateur standard
+        }
+      } catch (e) {
+        console.error("Erreur lors du traitement des données:", e);
+        resultEl.textContent = "Erreur de traitement des données";
+      }
     } else {
       resultEl.textContent = "Erreur de connexion";
       console.error("Erreur:", xhr.status, xhr.responseText);
@@ -30,7 +41,6 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
   xhr.onerror = function() {
     resultEl.textContent = "Erreur réseau";
     console.error("Erreur réseau");
-    console.log(error);
   };
 
   xhr.send(JSON.stringify(userCredentials));

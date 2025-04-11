@@ -34,7 +34,8 @@ async function addCategory() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(categoryData), // Convertit l'objet JavaScript en JSON
+            credentials: 'include',  // Important pour envoyer les cookies de session
+            body: JSON.stringify(categoryData) // Convertit l'objet JavaScript en JSON
         });
     
         // Vérifie si la réponse est OK
