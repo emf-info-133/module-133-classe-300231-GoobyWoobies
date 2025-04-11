@@ -486,3 +486,129 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error("Élément 'question-container' non trouvé dans le DOM");
     }
 });
+
+// Fonction pour enregistrer le score dans la base de données
+async function saveScore() {
+    const categorieId = getCategoryIdFromUrl();
+    if (!categorieId) {
+        console.error("Impossible d'enregistrer le score: ID de catégorie manquant");
+        return;
+    }
+    
+    // Créer l'objet de données pour l'API
+    const scoreData = {
+        score: score,
+        totalQuestions: currentQuizz.length,
+        categorieId: parseInt(categorieId)
+    };
+    
+    try {
+        // Envoyer la requête à l'API
+        const response = await fetch(`${API_BASE_URL}/client/saveScore`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(scoreData),
+            credentials: 'include' // Important pour inclure les cookies de session
+        });
+        
+        const data = await response.text();
+        
+        if (response.ok) {
+            console.log("🟢 Score enregistré avec succès:", data);
+            return true;
+        } else {
+            console.error("🔴 Erreur lors de l'enregistrement du score:", data);
+            return false;
+        }
+    } catch (error) {
+        console.error("🔴 Exception lors de l'enregistrement du score:", error);
+        return false;
+    }
+}
+
+// Afficher les résultats finaux
+function showResults() {
+    const percentage = Math.round((score / currentQuizz.length) * 100);
+    let message, messageClass;
+    
+    if (percentage >= 80) {
+        message = "Excellent travail!";
+        messageClass = "text-green-400";
+    } else if (percentage >= 60) {
+        message = "Bon travail!";
+        messageClass = "text-blue-400";
+    } else if (percentage >= 40) {
+        message = "Pas mal!";
+        messageClass = "text-yellow-400";
+    } else {
+        message = "Continuez à apprendre!";
+        messageClass = "text-red-400";
+    }
+    
+    // Enregistrer le score dans la base de données
+    saveScore().then(saved => {
+        const savingMessage = saved 
+            ? `<div class="text-green-400 text-sm mt-2 mb-4">Score enregistré dans votre profil!</div>` 
+            : `<div class="text-red-400 text-sm mt-2 mb-4">Échec de l'enregistrement du score</div>`;
+        
+        const resultsHTML = `
+            <div class="backdrop-blur-lg bg-dark-700/50 border border-white/10 rounded-xl shadow-xl p-8 w-full animate-fade-in text-center">
+                <h3 class="text-2xl font-bold mb-4 ${messageClass}">${message}</h3>
+                
+                <div class="mb-8">
+                    <div class="text-5xl font-bold text-gray-100 mb-2">${score} / ${currentQuizz.length}</div>
+                    <div class="text-xl text-gray-300">${percentage}% de réponses correctes</div>
+                    ${savingMessage}
+                </div>
+                
+                <div class="w-full bg-dark-900/50 rounded-full h-4 mb-8 border border-white/10">
+                    <div class="h-4 rounded-full ${
+                        percentage >= 80 ? 'bg-green-500' : 
+                        percentage >= 60 ? 'bg-blue-500' : 
+                        percentage >= 40 ? 'bg-yellow-500' : 
+                        'bg-red-500'
+                    }" style="width: ${percentage}%"></div>
+                </div>
+                
+                <div class="flex justify-center space-x-4">
+                    <div class="relative group">
+                        <div class="absolute -inset-1 bg-gradient-to-r from-accent-primary to-accent-secondary rounded-full blur opacity-50 group-hover:opacity-100 transition duration-500"></div>
+                        <a href="categories.html" class="relative px-6 py-3 backdrop-blur-lg bg-dark-700/70 border border-white/10 rounded-full shadow-lg text-white font-medium transition-all duration-300 hover:scale-105 flex items-center gap-2 group-hover:text-white overflow-hidden">
+                            <span class="relative z-10">Retour aux catégories</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            <div class="absolute inset-0 bg-gradient-to-r from-accent-primary to-accent-secondary opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                        </a>
+                    </div>
+                    
+                    <div class="relative group">
+                        <div class="absolute -inset-1 bg-gradient-to-r from-accent-primary to-accent-secondary rounded-full blur opacity-50 group-hover:opacity-100 transition duration-500"></div>
+                        <button onclick="restartQuiz()" class="relative px-6 py-3 backdrop-blur-lg bg-dark-700/70 border border-white/10 rounded-full shadow-lg text-white font-medium transition-all duration-300 hover:scale-105 flex items-center gap-2 group-hover:text-white overflow-hidden">
+                            <span class="relative z-10">Recommencer ce quiz</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            <div class="absolute inset-0 bg-gradient-to-r from-accent-primary to-accent-secondary opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <a href="leaderboard.html" class="text-accent-primary hover:text-accent-secondary underline transition-colors">
+                        Voir le classement
+                    </a>
+                </div>
+            </div>
+        `;
+        
+        const questionContainer = document.getElementById('question-container');
+        if (questionContainer) {
+            questionContainer.innerHTML = resultsHTML;
+        } else {
+            console.error("Élément 'question-container' non trouvé");
+        }
+    });
+}
