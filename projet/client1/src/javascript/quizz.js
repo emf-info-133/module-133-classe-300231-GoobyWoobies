@@ -56,6 +56,19 @@ async function fetchQuizData() {
 // Fonction pour démarrer le quiz
 async function startQuiz() {
     try {
+        // Afficher un indicateur de chargement pendant la récupération des données
+        const questionContainer = document.getElementById('question-container');
+        if (questionContainer) {
+            questionContainer.innerHTML = `
+                <div class="backdrop-blur-lg bg-dark-700/50 border border-white/10 rounded-xl shadow-xl p-6 w-full animate-fade-in text-center">
+                    <div class="flex justify-center mb-4">
+                        <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-accent-primary"></div>
+                    </div>
+                    <p class="text-gray-300">Chargement du quiz...</p>
+                </div>
+            `;
+        }
+        
         // Récupérer les données de l'API
         const responseText = await fetchQuizData();
         
@@ -105,14 +118,42 @@ async function startQuiz() {
         }
         
         // Masquer les instructions et afficher la première question
-        const instructionsElement = document.querySelector(".bg-white.p-8");
+        const instructionsElement = document.querySelector(".backdrop-blur-lg.bg-dark-700\\/50");
         if (instructionsElement) {
             instructionsElement.classList.add('hidden');
         }
         showQuestion();
     } catch (error) {
         console.error("Erreur lors du démarrage du quiz:", error);
-        alert("Impossible de démarrer le quiz. Veuillez réessayer.");
+        
+        // Afficher un message d'erreur dans le conteneur de question
+        const questionContainer = document.getElementById('question-container');
+        if (questionContainer) {
+            questionContainer.innerHTML = `
+                <div class="backdrop-blur-lg bg-dark-700/50 border border-red-500/30 rounded-xl shadow-xl p-6 w-full animate-fade-in text-center">
+                    <div class="flex justify-center mb-4 text-red-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-red-400">Impossible de démarrer le quiz</h3>
+                    <p class="text-gray-300 mb-6">Veuillez réessayer ultérieurement.</p>
+                    
+                    <div class="flex justify-center">
+                        <div class="relative group">
+                            <div class="absolute -inset-1 bg-gradient-to-r from-accent-primary to-accent-secondary rounded-full blur opacity-50 group-hover:opacity-100 transition duration-500"></div>
+                            <a href="categories.html" class="relative px-6 py-2 backdrop-blur-lg bg-dark-700/70 border border-white/10 rounded-full shadow-lg text-white font-medium transition-all duration-300 hover:scale-105 flex items-center gap-2 group-hover:text-white overflow-hidden">
+                                <span class="relative z-10">Retour aux catégories</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                </svg>
+                                <div class="absolute inset-0 bg-gradient-to-r from-accent-primary to-accent-secondary opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
     }
 }
 
@@ -152,33 +193,33 @@ function showQuestion() {
     timeLeft = 15;
     
     const questionHTML = `
-        <div class="bg-white rounded-xl shadow-xl p-6 w-full animate-fade-in">
+        <div class="backdrop-blur-lg bg-dark-700/50 border border-white/10 rounded-xl shadow-xl p-6 w-full animate-fade-in">
             <div class="flex justify-between items-center mb-6">
-                <span class="text-lg font-bold text-blue-600">Question ${currentQuestionIndex + 1}/${currentQuizz.length}</span>
-                <div class="bg-gray-200 rounded-full h-4 w-32">
-                    <div id="timer-bar" class="bg-blue-600 h-4 rounded-full transition-all duration-1000" style="width: 100%"></div>
+                <span class="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-accent-primary to-accent-secondary">Question ${currentQuestionIndex + 1}/${currentQuizz.length}</span>
+                <div class="bg-dark-900/50 rounded-full h-4 w-32 overflow-hidden border border-white/10">
+                    <div id="timer-bar" class="bg-gradient-to-r from-accent-primary to-accent-secondary h-4 rounded-full transition-all duration-1000" style="width: 100%"></div>
                 </div>
             </div>
             
-            <h3 class="text-xl font-semibold mb-6 text-gray-800">${questionData.texte || questionData.question || "Question sans texte"}</h3>
+            <h3 class="text-xl font-semibold mb-6 text-gray-100">${questionData.texte || questionData.question || "Question sans texte"}</h3>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <button onclick="checkAnswer(1)" class="p-4 bg-gray-100 hover:bg-blue-100 rounded-lg text-left transition-all duration-200 hover:shadow-md">
+                <button onclick="checkAnswer(1)" class="p-4 bg-dark-600/50 hover:bg-dark-600/80 rounded-lg text-left transition-all duration-200 hover:shadow-md border border-white/10 backdrop-blur-sm">
                     ${questionData.choix1 || "Option 1"}
                 </button>
-                <button onclick="checkAnswer(2)" class="p-4 bg-gray-100 hover:bg-blue-100 rounded-lg text-left transition-all duration-200 hover:shadow-md">
+                <button onclick="checkAnswer(2)" class="p-4 bg-dark-600/50 hover:bg-dark-600/80 rounded-lg text-left transition-all duration-200 hover:shadow-md border border-white/10 backdrop-blur-sm">
                     ${questionData.choix2 || "Option 2"}
                 </button>
-                <button onclick="checkAnswer(3)" class="p-4 bg-gray-100 hover:bg-blue-100 rounded-lg text-left transition-all duration-200 hover:shadow-md">
+                <button onclick="checkAnswer(3)" class="p-4 bg-dark-600/50 hover:bg-dark-600/80 rounded-lg text-left transition-all duration-200 hover:shadow-md border border-white/10 backdrop-blur-sm">
                     ${questionData.choix3 || "Option 3"}
                 </button>
-                <button onclick="checkAnswer(4)" class="p-4 bg-gray-100 hover:bg-blue-100 rounded-lg text-left transition-all duration-200 hover:shadow-md">
+                <button onclick="checkAnswer(4)" class="p-4 bg-dark-600/50 hover:bg-dark-600/80 rounded-lg text-left transition-all duration-200 hover:shadow-md border border-white/10 backdrop-blur-sm">
                     ${questionData.choix4 || "Option 4"}
                 </button>
             </div>
             
             <div class="mt-6 text-right">
-                <span class="text-gray-600">Score actuel: <span class="font-bold text-blue-600">${score}</span></span>
+                <span class="text-gray-300">Score actuel: <span class="font-bold text-transparent bg-clip-text bg-gradient-to-r from-accent-primary to-accent-secondary">${score}</span></span>
             </div>
         </div>
     `;
@@ -216,10 +257,10 @@ function startTimer() {
         timerBar.style.width = `${percentage}%`;
         
         if (timeLeft <= 5) {
+            timerBar.classList.remove('bg-gradient-to-r', 'from-accent-primary', 'to-accent-secondary');
             timerBar.classList.add('bg-red-600');
-            timerBar.classList.remove('bg-blue-600');
         } else {
-            timerBar.classList.add('bg-blue-600');
+            timerBar.classList.add('bg-gradient-to-r', 'from-accent-primary', 'to-accent-secondary');
             timerBar.classList.remove('bg-red-600');
         }
         
@@ -265,26 +306,33 @@ function showFeedback(isCorrect) {
     const correctAnswerText = questionData[correctAnswerKey] || "Réponse non disponible";
     
     const feedbackHTML = `
-        <div class="bg-white rounded-xl shadow-xl p-6 w-full animate-fade-in">
+        <div class="backdrop-blur-lg bg-dark-700/50 border border-white/10 rounded-xl shadow-xl p-6 w-full animate-fade-in">
             <div class="flex items-center justify-center mb-6">
                 ${isCorrect 
-                    ? `<span class="bg-green-100 text-green-800 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg></span>`
-                    : `<span class="bg-red-100 text-red-800 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg></span>`
+                    ? `<span class="bg-green-500/20 text-green-400 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg></span>`
+                    : `<span class="bg-red-500/20 text-red-400 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg></span>`
                 }
             </div>
             
-            <h3 class="text-xl font-semibold mb-2 text-center ${isCorrect ? 'text-green-600' : 'text-red-600'}">
+            <h3 class="text-xl font-semibold mb-2 text-center ${isCorrect ? 'text-green-400' : 'text-red-400'}">
                 ${isCorrect ? 'Bonne réponse!' : 'Mauvaise réponse!'}
             </h3>
             
-            <p class="text-center text-gray-700 mb-6">
+            <p class="text-center text-gray-300 mb-6">
                 La bonne réponse était: <span class="font-bold">${correctAnswerText}</span>
             </p>
             
             <div class="flex justify-center">
-                <button onclick="nextQuestion()" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md transition-all duration-200">
-                    Question suivante
-                </button>
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-accent-primary to-accent-secondary rounded-full blur opacity-50 group-hover:opacity-100 transition duration-500"></div>
+                    <button onclick="nextQuestion()" class="relative px-6 py-2 backdrop-blur-lg bg-dark-700/70 border border-white/10 rounded-full shadow-lg text-white font-medium transition-all duration-300 hover:scale-105 flex items-center gap-2 group-hover:text-white overflow-hidden">
+                        <span class="relative z-10">Question suivante</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                        <div class="absolute inset-0 bg-gradient-to-r from-accent-primary to-accent-secondary opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                    </button>
+                </div>
             </div>
         </div>
     `;
@@ -314,38 +362,58 @@ function showResults() {
     
     if (percentage >= 80) {
         message = "Excellent travail!";
-        messageClass = "text-green-600";
+        messageClass = "text-green-400";
     } else if (percentage >= 60) {
         message = "Bon travail!";
-        messageClass = "text-blue-600";
+        messageClass = "text-blue-400";
     } else if (percentage >= 40) {
         message = "Pas mal!";
-        messageClass = "text-yellow-600";
+        messageClass = "text-yellow-400";
     } else {
         message = "Continuez à apprendre!";
-        messageClass = "text-red-600";
+        messageClass = "text-red-400";
     }
     
     const resultsHTML = `
-        <div class="bg-white rounded-xl shadow-xl p-8 w-full animate-fade-in text-center">
+        <div class="backdrop-blur-lg bg-dark-700/50 border border-white/10 rounded-xl shadow-xl p-8 w-full animate-fade-in text-center">
             <h3 class="text-2xl font-bold mb-4 ${messageClass}">${message}</h3>
             
             <div class="mb-8">
-                <div class="text-5xl font-bold text-gray-800 mb-2">${score} / ${currentQuizz.length}</div>
-                <div class="text-xl text-gray-600">${percentage}% de réponses correctes</div>
+                <div class="text-5xl font-bold text-gray-100 mb-2">${score} / ${currentQuizz.length}</div>
+                <div class="text-xl text-gray-300">${percentage}% de réponses correctes</div>
             </div>
             
-            <div class="w-full bg-gray-200 rounded-full h-4 mb-8">
-                <div class="h-4 rounded-full ${messageClass === 'text-green-600' ? 'bg-green-600' : messageClass === 'text-blue-600' ? 'bg-blue-600' : messageClass === 'text-yellow-600' ? 'bg-yellow-600' : 'bg-red-600'}" style="width: ${percentage}%"></div>
+            <div class="w-full bg-dark-900/50 rounded-full h-4 mb-8 border border-white/10">
+                <div class="h-4 rounded-full ${
+                    percentage >= 80 ? 'bg-green-500' : 
+                    percentage >= 60 ? 'bg-blue-500' : 
+                    percentage >= 40 ? 'bg-yellow-500' : 
+                    'bg-red-500'
+                }" style="width: ${percentage}%"></div>
             </div>
             
             <div class="flex justify-center space-x-4">
-                <a href="categories.html" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md transition-all duration-200">
-                    Retour aux catégories
-                </a>
-                <button onclick="restartQuiz()" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg shadow-md transition-all duration-200">
-                    Recommencer ce quiz
-                </button>
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-accent-primary to-accent-secondary rounded-full blur opacity-50 group-hover:opacity-100 transition duration-500"></div>
+                    <a href="categories.html" class="relative px-6 py-3 backdrop-blur-lg bg-dark-700/70 border border-white/10 rounded-full shadow-lg text-white font-medium transition-all duration-300 hover:scale-105 flex items-center gap-2 group-hover:text-white overflow-hidden">
+                        <span class="relative z-10">Retour aux catégories</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        <div class="absolute inset-0 bg-gradient-to-r from-accent-primary to-accent-secondary opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                    </a>
+                </div>
+                
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-accent-primary to-accent-secondary rounded-full blur opacity-50 group-hover:opacity-100 transition duration-500"></div>
+                    <button onclick="restartQuiz()" class="relative px-6 py-3 backdrop-blur-lg bg-dark-700/70 border border-white/10 rounded-full shadow-lg text-white font-medium transition-all duration-300 hover:scale-105 flex items-center gap-2 group-hover:text-white overflow-hidden">
+                        <span class="relative z-10">Recommencer ce quiz</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        <div class="absolute inset-0 bg-gradient-to-r from-accent-primary to-accent-secondary opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                    </button>
+                </div>
             </div>
         </div>
     `;
@@ -387,5 +455,34 @@ document.addEventListener('DOMContentLoaded', function() {
         if (usernameElement) {
             usernameElement.textContent = username;
         }
+    }
+    
+    // Créer et afficher le bouton de démarrage du quiz
+    const questionContainer = document.getElementById('question-container');
+    if (questionContainer) {
+        questionContainer.innerHTML = `
+            <div class="backdrop-blur-lg bg-dark-700/50 border border-white/10 rounded-xl shadow-xl p-6 w-full animate-fade-in text-center">
+                <h3 class="text-xl font-semibold mb-6 text-gray-100">Prêt à commencer le quiz${categoryName !== "Quiz" ? ` sur "${categoryName}"` : ''} ?</h3>
+                
+                <div class="flex justify-center">
+                    <div class="relative group">
+                        <div class="absolute -inset-1 bg-gradient-to-r from-accent-primary to-accent-secondary rounded-full blur opacity-50 group-hover:opacity-100 transition duration-500"></div>
+                        <button id="start-quiz-button" class="relative px-6 py-2 backdrop-blur-lg bg-dark-700/70 border border-white/10 rounded-full shadow-lg text-white font-medium transition-all duration-300 hover:scale-105 flex items-center gap-2 group-hover:text-white overflow-hidden">
+                            <span class="relative z-10">Commencer le quiz</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                            </svg>
+                            <div class="absolute inset-0 bg-gradient-to-r from-accent-primary to-accent-secondary opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        questionContainer.classList.remove('hidden');
+        
+        // Ajouter un écouteur d'événement au bouton de démarrage
+        document.getElementById('start-quiz-button').addEventListener('click', startQuiz);
+    } else {
+        console.error("Élément 'question-container' non trouvé dans le DOM");
     }
 });
