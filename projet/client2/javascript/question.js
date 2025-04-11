@@ -71,13 +71,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const data = {
-            texte: question, // <-- ici on renomme pour correspondre à la colonne SQL
-            categorie_id: selectedCategoryId,
+            texte: question,
+            categorieId: selectedCategoryId,  // <-- Renommé en camelCase
             choix1: choix1,
             choix2: choix2,
             choix3: choix3,
             choix4: choix4,
-            bonne_reponse: bonneReponse
+            bonneReponse: bonneReponse  // <-- Renommé en camelCase
         };
         
         console.log("Données envoyées :", data);

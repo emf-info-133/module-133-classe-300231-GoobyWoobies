@@ -42,7 +42,7 @@ $(document).ready(function () {
             .text("Inscription réussie ! Redirection...")
             .css("color", "green");
           setTimeout(() => {
-            window.location.href = "../index.html";
+            window.location.href = "../html/index.html";
           }, 1500);
         },
         error: function (xhr) {
