@@ -2,6 +2,7 @@ package apiclient.app.wrk;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -13,20 +14,30 @@ public class wrkDBManager {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    
+    // Ajout d'un encodeur de mot de passe BCrypt
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public Map<String, String> verifyLogin(String username, String password) {
-        String sql = "SELECT role FROM Utilisateur WHERE nom = ? AND mot_de_passe = ?";
+        String sql = "SELECT role, mot_de_passe FROM Utilisateur WHERE nom = ?";
         try {
             System.out.println("🔍 Vérification SQL pour: " + username);
-            String role = jdbcTemplate.queryForObject(sql, String.class, username, password);
-            System.out.println("🔍 Résultat SQL - Rôle: " + role);
             
-            if (role != null) {
+            // Récupérer le rôle et le hash du mot de passe
+            Map<String, Object> result = jdbcTemplate.queryForMap(sql, username);
+            String storedHash = (String) result.get("mot_de_passe");
+            String role = (String) result.get("role");
+            
+            // Vérifier si le mot de passe correspond au hash stocké
+            if (storedHash != null && passwordEncoder.matches(password, storedHash)) {
+                System.out.println("🔍 Authentification réussie - Rôle: " + role);
+                
                 Map<String, String> userInfo = new HashMap<>();
                 userInfo.put("username", username);
                 userInfo.put("role", role);
                 return userInfo;
             }
+            System.out.println("❌ Authentification échouée pour: " + username);
             return null;
         } catch (Exception e) {
             System.out.println("❌ Erreur SQL: " + e.getMessage());
@@ -107,10 +118,14 @@ public class wrkDBManager {
     }
  
     public boolean createUser(String username, String password) {
+        // Hasher le mot de passe avant de l'enregistrer
+        String hashedPassword = passwordEncoder.encode(password);
+        
         // Par défaut, les nouveaux utilisateurs ont le rôle "user"
         String sql = "INSERT INTO Utilisateur (nom, mot_de_passe, score, role) VALUES (?, ?, 0, 'user')";
         try {
-            jdbcTemplate.update(sql, username, password);
+            jdbcTemplate.update(sql, username, hashedPassword);
+            System.out.println("✅ Utilisateur créé avec succès: " + username);
             return true;
         } catch (Exception e) {
             System.out.println("❌ Erreur lors de la création de l'utilisateur: " + e.getMessage());
