@@ -29,7 +29,7 @@
     // Fonction pour gérer la déconnexion
     function logout() {
       const xhr = new XMLHttpRequest();
-      xhr.open("POST", "http://localhost:8080/client/logout", true);
+      xhr.open("POST", "https://docker-133.angeli.emf-informatique.ch/client/logout", true);
       xhr.withCredentials = true;
       xhr.onload = function() {
         if (xhr.status === 200) {

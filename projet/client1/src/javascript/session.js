@@ -1,6 +1,6 @@
 window.addEventListener("DOMContentLoaded", function() {
   const xhr = new XMLHttpRequest();
-  xhr.open("GET", "http://localhost:8080/client/session", true);
+  xhr.open("GET", "https://docker-133.angeli.emf-informatique.ch/client/session", true);
   xhr.withCredentials = true;  // Important pour inclure les cookies de session
  
   xhr.onload = function() {
@@ -65,7 +65,7 @@ window.addEventListener("DOMContentLoaded", function() {
   if (logoutButton) {
     logoutButton.addEventListener('click', function() {
       const logoutXhr = new XMLHttpRequest();
-      logoutXhr.open("POST", "http://localhost:8080/client/logout", true);
+      logoutXhr.open("POST", "https://docker-133.angeli.emf-informatique.ch/client/logout", true);
       logoutXhr.withCredentials = true;
       logoutXhr.onload = function() {
         if (logoutXhr.status === 200) {

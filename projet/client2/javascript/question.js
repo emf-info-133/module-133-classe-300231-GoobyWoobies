@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Données envoyées :", data);
 
         try {
-            const response = await fetch("http://localhost:8080/admin/addQuestion", {
+            const response = await fetch("https://docker-133.angeli.emf-informatique.ch/admin/addQuestion", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

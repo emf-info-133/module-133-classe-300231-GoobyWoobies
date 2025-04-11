@@ -30,7 +30,7 @@ $(document).ready(function () {
    
       // Envoi des données au serveur
       $.ajax({
-        url: "http://localhost:8080/client/register",
+        url: "https://docker-133.angeli.emf-informatique.ch/client/register",
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify({

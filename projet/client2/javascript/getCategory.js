@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", async function () {
     // Récupère les catégories depuis l'API
     try {
-        const response = await fetch('http://localhost:8080/admin/getCategories', {
+        const response = await fetch('https://docker-133.angeli.emf-informatique.ch/admin/getCategories', {
             method: 'GET',
             credentials: 'include',  // Important pour inclure les cookies de session
             headers: {

@@ -8,7 +8,7 @@ let timeLeft = 15;
 // Si cette variable est déjà définie dans un autre fichier inclus avant celui-ci,
 // utilisez-la plutôt que de la redéclarer
 if (typeof API_BASE_URL === 'undefined') {
-    const API_BASE_URL = 'http://localhost:8080';
+    const API_BASE_URL = 'https://docker-133.angeli.emf-informatique.ch';
 }
 
 // Fonction pour récupérer l'ID de catégorie depuis l'URL

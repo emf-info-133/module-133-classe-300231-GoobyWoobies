@@ -1,5 +1,5 @@
 // Fichier question.js - Gestion des requêtes API pour les questions
-const API_BASE_URL = 'http://localhost:8080'; // À ajuster selon votre configuration
+const API_BASE_URL = 'https://docker-133.angeli.emf-informatique.ch'; // À ajuster selon votre configuration
 
 /**
  * Récupère les catégories disponibles

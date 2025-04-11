@@ -12,7 +12,7 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
   };
 
   const xhr = new XMLHttpRequest();
-  xhr.open("POST", "http://localhost:8080/client/login", true);
+  xhr.open("POST", "https://docker-133.angeli.emf-informatique.ch/client/login", true);
   xhr.withCredentials = true; // Important pour les cookies de session
   xhr.setRequestHeader("Content-Type", "application/json");
 
@@ -49,7 +49,7 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
 // Fonction pour gérer la déconnexion
 function logout() {
   const xhr = new XMLHttpRequest();
-  xhr.open("POST", "http://localhost:8080/client/logout", true);
+  xhr.open("POST", "https://docker-133.angeli.emf-informatique.ch/client/logout", true);
   xhr.withCredentials = true;
   xhr.onload = function() {
     if (xhr.status === 200) {

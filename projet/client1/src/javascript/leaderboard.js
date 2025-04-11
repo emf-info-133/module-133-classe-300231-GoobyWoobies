@@ -32,7 +32,7 @@ function fetchLeaderboard() {
   
   // Créer la requête AJAX
   const xhr = new XMLHttpRequest();
-  xhr.open("GET", "http://localhost:8080/client/getLeaderboard", true); // URL relative
+  xhr.open("GET", "https://docker-133.angeli.emf-informatique.ch/client/getLeaderboard", true); // URL relative
   xhr.withCredentials = true; // Important pour les cookies de session
   xhr.setRequestHeader("Content-Type", "application/json");
   

@@ -29,7 +29,7 @@ async function addCategory() {
 
     try {
         // Envoie la requête POST à l'API pour ajouter la catégorie
-        const response = await fetch('http://localhost:8080/admin/addCategory', {
+        const response = await fetch('https://docker-133.angeli.emf-informatique.ch/admin/addCategory', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
