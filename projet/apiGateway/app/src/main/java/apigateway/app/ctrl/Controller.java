@@ -14,7 +14,7 @@ import apigateway.app.models.Categorie;
 import apigateway.app.models.Question;
 import jakarta.servlet.http.HttpSession;
 
-@CrossOrigin(origins = { "http://localhost:5500" }, allowCredentials = "true")
+@CrossOrigin(origins = { "https://angeli.emf-informatique.ch" }, allowCredentials = "true")
 @RestController
 public class Controller {
     private final static String URL_CLIENT = "http://service-rest1:8080";
