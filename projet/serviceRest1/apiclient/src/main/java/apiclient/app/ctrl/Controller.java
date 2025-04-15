@@ -28,7 +28,7 @@ public class Controller {
         System.out.println("🔍 Vérification des identifiants pour: " + username);
 
         Map<String, String> userInfo = dbManager.verifyLogin(username, password);
-        
+
         if (userInfo != null) {
             System.out.println("✅ Identifiants valides pour: " + username + " (Rôle: " + userInfo.get("role") + ")");
             try {
@@ -48,24 +48,24 @@ public class Controller {
     public ResponseEntity<String> getLeaderboard(@RequestParam String username) {
         try {
             System.out.println("🔄 Récupération du leaderboard pour: " + username);
-            
+
             if (username == null || username.isEmpty()) {
                 System.out.println("❌ Paramètre username manquant");
                 return ResponseEntity.badRequest().body("{\"error\": \"Paramètre username requis\"}");
             }
-    
+
             // Appeler le service pour récupérer le leaderboard
             Map<String, Object> leaderboardData = dbManager.getLeaderboard(username);
-    
+
             if (leaderboardData == null) {
                 System.out.println("❌ Échec de récupération des données du leaderboard");
                 return ResponseEntity.badRequest().body("{\"error\": \"Erreur lors de la récupération des données\"}");
             }
-    
+
             System.out.println("✅ Leaderboard récupéré avec succès");
             // Retourner la réponse JSON
             return ResponseEntity.ok(new ObjectMapper().writeValueAsString(leaderboardData));
-    
+
         } catch (Exception e) {
             System.out.println("❌ Exception dans /leaderboard: " + e.getMessage());
             e.printStackTrace();
@@ -106,18 +106,18 @@ public class Controller {
     public ResponseEntity<String> register(@RequestBody Map<String, String> credentials) {
         String username = credentials.get("username");
         String password = credentials.get("password");
- 
+
         System.out.println("🔍 Tentative d'inscription pour: " + username);
- 
+
         // Vérifier si l'utilisateur existe déjà
         if (dbManager.userExists(username)) {
             System.out.println("❌ Utilisateur existe déjà: " + username);
             return ResponseEntity.status(409).body("Ce nom d'utilisateur est déjà pris");
         }
- 
+
         // Créer le nouvel utilisateur (avec rôle "user" par défaut)
         boolean success = dbManager.createUser(username, password);
- 
+
         if (success) {
             System.out.println("✅ Utilisateur créé avec succès: " + username);
             return ResponseEntity.ok("Inscription réussie");

@@ -11,9 +11,9 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                    .allowedOrigins("https://angeli.emf-informatique.ch")
-                    .allowedMethods("*")
-                    .allowCredentials(true);
+                        .allowedOrigins("https://angeli.emf-informatique.ch")
+                        .allowedMethods("*")
+                        .allowCredentials(true);
             }
         };
     }

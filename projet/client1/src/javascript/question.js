@@ -13,17 +13,17 @@ function fetchCategories(successCallback, errorCallback) {
         dataType: 'json',
         xhrFields: {
             withCredentials: true  // Important pour envoyer les cookies de session
-          },
-        beforeSend: function() {
-            console.log('🔵 Envoi de la requête pour récupérer les catégories...');
         },
-        success: function(data) {
+        beforeSend: function () {
+            //console.log('🔵 Envoi de la requête pour récupérer les catégories...');
+        },
+        success: function (data) {
             if (successCallback && typeof successCallback === 'function') {
                 successCallback(data);
             }
         },
-        error: function(xhr, status, error) {
-            console.error('🔴 Erreur lors de la récupération des catégories:', error);
+        error: function (xhr, status, error) {
+            //console.error('🔴 Erreur lors de la récupération des catégories:', error);
             if (errorCallback && typeof errorCallback === 'function') {
                 errorCallback(error);
             }
@@ -44,8 +44,8 @@ function fetchCategoryName(categoryId, successCallback, errorCallback) {
         dataType: 'json',
         xhrFields: {
             withCredentials: true  // Important pour envoyer les cookies de session
-          },
-        success: function(data) {
+        },
+        success: function (data) {
             const category = data.find(cat => cat.id == categoryId);
             if (category) {
                 successCallback(category);
@@ -53,8 +53,8 @@ function fetchCategoryName(categoryId, successCallback, errorCallback) {
                 errorCallback('Catégorie non trouvée');
             }
         },
-        error: function(xhr, status, error) {
-            console.error('🔴 Erreur lors de la récupération du nom de la catégorie:', error);
+        error: function (xhr, status, error) {
+            //console.error('🔴 Erreur lors de la récupération du nom de la catégorie:', error);
             if (errorCallback && typeof errorCallback === 'function') {
                 errorCallback(error);
             }
@@ -75,14 +75,14 @@ function fetchQuestions(categoryId, successCallback, errorCallback) {
         dataType: 'json',
         xhrFields: {
             withCredentials: true  // Important pour envoyer les cookies de session
-          },
-        success: function(data) {
+        },
+        success: function (data) {
             if (successCallback && typeof successCallback === 'function') {
                 successCallback(data);
             }
         },
-        error: function(xhr, status, error) {
-            console.error('🔴 Erreur lors de la récupération des questions:', error);
+        error: function (xhr, status, error) {
+            //console.error('🔴 Erreur lors de la récupération des questions:', error);
             if (errorCallback && typeof errorCallback === 'function') {
                 errorCallback(error);
             }
@@ -97,35 +97,35 @@ function fetchQuestions(categoryId, successCallback, errorCallback) {
 function startQuiz(questions) {
     let currentQuestionIndex = 0;
     let score = 0;
-    
+
     function displayCurrentQuestion() {
         displayQuestion(questions[currentQuestionIndex]);
     }
-    
+
     // Gestionnaire pour les réponses
-    $(document).on('click', '.answer-button', function() {
+    $(document).on('click', '.answer-button', function () {
         const selectedAnswer = $(this).text().trim();
         const correctAnswer = questions[currentQuestionIndex].correctAnswer;
-        
+
         if (selectedAnswer === correctAnswer) {
             score++;
             $(this).addClass('bg-green-500').removeClass('bg-blue-500 hover:bg-blue-600');
         } else {
             $(this).addClass('bg-red-500').removeClass('bg-blue-500 hover:bg-blue-600');
             // Mettre en évidence la bonne réponse
-            $('.answer-button').each(function() {
+            $('.answer-button').each(function () {
                 if ($(this).text().trim() === correctAnswer) {
                     $(this).addClass('bg-green-500').removeClass('bg-blue-500 hover:bg-blue-600');
                 }
             });
         }
-        
+
         $('.answer-button').off('click').css('cursor', 'default');
         $('.next-button').show();
     });
-    
+
     // Gestionnaire pour le bouton suivant
-    $(document).on('click', '.next-button', function() {
+    $(document).on('click', '.next-button', function () {
         currentQuestionIndex++;
         if (currentQuestionIndex < questions.length) {
             displayCurrentQuestion();
@@ -134,7 +134,7 @@ function startQuiz(questions) {
             endQuiz(score, questions.length);
         }
     });
-    
+
     // Afficher la première question
     displayCurrentQuestion();
     $('.next-button').hide();
@@ -199,29 +199,29 @@ function getResultMessage(score, total) {
     return "Ne vous découragez pas ! C'est l'occasion d'apprendre davantage.";
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
     // Récupérer l'ID de la catégorie depuis l'URL
     const urlParams = new URLSearchParams(window.location.search);
     const categoryId = urlParams.get('category');
 
     if (categoryId) {
         // Récupérer le nom de la catégorie avec l'ID
-        fetchCategoryName(categoryId, function(category) {
+        fetchCategoryName(categoryId, function (category) {
             // Afficher le nom de la catégorie dans le HTML
             $('#category-name').text(category.nom);
-            
+
             // Récupérer les questions pour cette catégorie
-            fetchQuestions(categoryId, function(questions) {
+            fetchQuestions(categoryId, function (questions) {
                 // Démarrer le quiz avec les questions récupérées
                 startQuiz(questions);
-            }, function(error) {
+            }, function (error) {
                 $('#question-container').html(`
                     <div class="text-red-500 text-center py-12">
                         Erreur lors du chargement des questions. Veuillez réessayer.
                     </div>
                 `);
             });
-        }, function(error) {
+        }, function (error) {
             $('#category-name').text('Erreur de chargement');
             $('#question-container').html(`
                 <div class="text-red-500 text-center py-12">

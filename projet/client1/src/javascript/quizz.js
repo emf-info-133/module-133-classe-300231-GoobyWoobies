@@ -26,7 +26,7 @@ async function fetchQuizData() {
         window.location.href = "../main.html";
         return;
     }
-    
+
     try {
         // Utiliser jQuery Ajax comme dans votre fichier categories.js
         return new Promise((resolve, reject) => {
@@ -35,22 +35,22 @@ async function fetchQuizData() {
                 method: 'GET',
                 xhrFields: {
                     withCredentials: true  // Important pour envoyer les cookies de session
-                  },
-                beforeSend: function() {
-                    console.log(`🔵 Envoi de requête à /admin/startQuizz/${categorieId}`);
                 },
-                success: function(response) {
-                    console.log("🟢 Réponse reçue:", response);
+                beforeSend: function () {
+                    //console.log(`🔵 Envoi de requête à /admin/startQuizz/${categorieId}`);
+                },
+                success: function (response) {
+                    //console.log("🟢 Réponse reçue:", response);
                     resolve(response);
                 },
-                error: function(xhr, status, error) {
-                    console.error("🔴 Erreur lors de l'appel à l'API Admin:", error);
+                error: function (xhr, status, error) {
+                    //console.error("🔴 Erreur lors de l'appel à l'API Admin:", error);
                     reject(error);
                 }
             });
         });
     } catch (error) {
-        console.error("Erreur:", error);
+        //console.error("Erreur:", error);
         alert("Impossible de charger le quiz. Veuillez réessayer.");
         throw error;
     }
@@ -71,10 +71,10 @@ async function startQuiz() {
                 </div>
             `;
         }
-        
+
         // Récupérer les données de l'API
         const responseText = await fetchQuizData();
-        
+
         // Vérifier si la réponse commence par "Quizz : "
         let quizzData;
         if (typeof responseText === 'string') {
@@ -86,7 +86,7 @@ async function startQuiz() {
                 try {
                     quizzData = JSON.parse(responseText);
                 } catch (e) {
-                    console.error("Format de réponse invalide:", e);
+                    //console.error("Format de réponse invalide:", e);
                     alert("Format de réponse invalide. Veuillez réessayer.");
                     return;
                 }
@@ -95,10 +95,10 @@ async function startQuiz() {
             // Si c'est déjà un objet JSON
             quizzData = responseText;
         }
-        
+
         // Vérifier que quizzData est bien un tableau
         if (!Array.isArray(quizzData)) {
-            console.error("Le format des données reçues n'est pas un tableau:", quizzData);
+            //console.error("Le format des données reçues n'est pas un tableau:", quizzData);
             // Si quizzData est un objet avec des propriétés qui contiennent les questions
             if (quizzData && typeof quizzData === 'object') {
                 // Essayer de trouver un tableau de questions dans l'objet
@@ -113,13 +113,13 @@ async function startQuiz() {
                 quizzData = [quizzData];
             }
         }
-        
+
         currentQuizz = quizzData;
-        
+
         if (!currentQuizz || currentQuizz.length === 0) {
             throw new Error("Aucune question disponible");
         }
-        
+
         // Masquer les instructions et afficher la première question
         const instructionsElement = document.querySelector(".backdrop-blur-lg.bg-dark-700\\/50");
         if (instructionsElement) {
@@ -127,8 +127,8 @@ async function startQuiz() {
         }
         showQuestion();
     } catch (error) {
-        console.error("Erreur lors du démarrage du quiz:", error);
-        
+        //console.error("Erreur lors du démarrage du quiz:", error);
+
         // Afficher un message d'erreur dans le conteneur de question
         const questionContainer = document.getElementById('question-container');
         if (questionContainer) {
@@ -166,35 +166,35 @@ function showQuestion() {
         showResults();
         return;
     }
-    
+
     const questionData = currentQuizz[currentQuestionIndex];
-    
+
     // Vérifier que les données de la question existent
     if (!questionData) {
-        console.error("Données de question non disponibles pour l'index", currentQuestionIndex);
+        //console.error("Données de question non disponibles pour l'index", currentQuestionIndex);
         alert("Données de question non disponibles. Veuillez réessayer.");
         return;
     }
-    
+
     // Vérifier si tous les champs nécessaires sont présents
-    if (!questionData.texte || !questionData.choix1 || !questionData.choix2 || 
+    if (!questionData.texte || !questionData.choix1 || !questionData.choix2 ||
         !questionData.choix3 || !questionData.choix4 || !questionData.bonneReponse) {
-        console.error("Les données de la question sont incomplètes:", questionData);
-        
+        //console.error("Les données de la question sont incomplètes:", questionData);
+
         // Essayer de réparer les données manquantes
         if (!questionData.texte && questionData.question) {
             questionData.texte = questionData.question;
         }
-        
+
         // Si toujours des champs manquants, afficher une erreur
         if (!questionData.texte) {
             alert("Les données de la question sont incomplètes. Veuillez réessayer.");
             return;
         }
     }
-    
+
     timeLeft = 15;
-    
+
     const questionHTML = `
         <div class="backdrop-blur-lg bg-dark-700/50 border border-white/10 rounded-xl shadow-xl p-6 w-full animate-fade-in">
             <div class="flex justify-between items-center mb-6">
@@ -226,12 +226,12 @@ function showQuestion() {
             </div>
         </div>
     `;
-    
+
     const questionContainer = document.getElementById('question-container');
     if (questionContainer) {
         questionContainer.innerHTML = questionHTML;
         questionContainer.classList.remove('hidden');
-        
+
         // Démarrer le timer
         startTimer();
     } else {
@@ -243,22 +243,22 @@ function showQuestion() {
 function startTimer() {
     const timerBar = document.getElementById('timer-bar');
     if (!timerBar) {
-        console.error("Élément 'timer-bar' non trouvé");
+        //console.error("Élément 'timer-bar' non trouvé");
         return;
     }
-    
+
     timeLeft = 15;
-    
+
     // Réinitialiser la largeur à 100%
     timerBar.style.width = '100%';
-    
+
     clearInterval(timer);
     timer = setInterval(() => {
         timeLeft--;
         // Mettre à jour la barre de progression
         const percentage = (timeLeft / 15) * 100;
         timerBar.style.width = `${percentage}%`;
-        
+
         if (timeLeft <= 5) {
             timerBar.classList.remove('bg-gradient-to-r', 'from-accent-primary', 'to-accent-secondary');
             timerBar.classList.add('bg-red-600');
@@ -266,7 +266,7 @@ function startTimer() {
             timerBar.classList.add('bg-gradient-to-r', 'from-accent-primary', 'to-accent-secondary');
             timerBar.classList.remove('bg-red-600');
         }
-        
+
         if (timeLeft <= 0) {
             clearInterval(timer);
             // Temps écoulé, passer à la question suivante
@@ -279,42 +279,48 @@ function startTimer() {
 function checkAnswer(selectedAnswer) {
     clearInterval(timer);
     const question = currentQuizz[currentQuestionIndex];
-    
+
     // S'assurer que la bonne réponse est un nombre
     let correctAnswer = question.bonneReponse;
     if (typeof correctAnswer === 'string') {
         correctAnswer = parseInt(correctAnswer);
     }
-    
+
     const isCorrect = (selectedAnswer === correctAnswer);
-    
-    if (isCorrect) {
+
+   
+     if (isCorrect) {
         score++;
+    } else {
+        if (score >= 0) {
+            score --;
+        }
     }
     
+
     showFeedback(isCorrect);
 }
 
 // Afficher le feedback après une réponse
 function showFeedback(isCorrect) {
     const questionData = currentQuizz[currentQuestionIndex];
-    
+
     // S'assurer que bonneReponse est un nombre
     let correctAnswerNum = questionData.bonneReponse;
     if (typeof correctAnswerNum === 'string') {
         correctAnswerNum = parseInt(correctAnswerNum);
     }
-    
+
     const correctAnswerKey = `choix${correctAnswerNum}`;
     const correctAnswerText = questionData[correctAnswerKey] || "Réponse non disponible";
-    
+
     const feedbackHTML = `
         <div class="backdrop-blur-lg bg-dark-700/50 border border-white/10 rounded-xl shadow-xl p-6 w-full animate-fade-in">
             <div class="flex items-center justify-center mb-6">
-                ${isCorrect 
-                    ? `<span class="bg-green-500/20 text-green-400 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg></span>`
-                    : `<span class="bg-red-500/20 text-red-400 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg></span>`
-                }
+                ${isCorrect
+            ? `<span class="bg-green-500/20 text-green-400 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg></span>`
+            : `<span class="bg-red-500/20 text-red-400 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg></span>`
+        }
             </div>
             
             <h3 class="text-xl font-semibold mb-2 text-center ${isCorrect ? 'text-green-400' : 'text-red-400'}">
@@ -339,12 +345,12 @@ function showFeedback(isCorrect) {
             </div>
         </div>
     `;
-    
+
     const questionContainer = document.getElementById('question-container');
     if (questionContainer) {
         questionContainer.innerHTML = feedbackHTML;
     } else {
-        console.error("Élément 'question-container' non trouvé");
+        //console.error("Élément 'question-container' non trouvé");
     }
 }
 
@@ -362,7 +368,7 @@ function nextQuestion() {
 function showResults() {
     const percentage = Math.round((score / currentQuizz.length) * 100);
     let message, messageClass;
-    
+
     if (percentage >= 80) {
         message = "Excellent travail!";
         messageClass = "text-green-400";
@@ -376,7 +382,7 @@ function showResults() {
         message = "Continuez à apprendre!";
         messageClass = "text-red-400";
     }
-    
+
     const resultsHTML = `
         <div class="backdrop-blur-lg bg-dark-700/50 border border-white/10 rounded-xl shadow-xl p-8 w-full animate-fade-in text-center">
             <h3 class="text-2xl font-bold mb-4 ${messageClass}">${message}</h3>
@@ -387,12 +393,11 @@ function showResults() {
             </div>
             
             <div class="w-full bg-dark-900/50 rounded-full h-4 mb-8 border border-white/10">
-                <div class="h-4 rounded-full ${
-                    percentage >= 80 ? 'bg-green-500' : 
-                    percentage >= 60 ? 'bg-blue-500' : 
-                    percentage >= 40 ? 'bg-yellow-500' : 
+                <div class="h-4 rounded-full ${percentage >= 80 ? 'bg-green-500' :
+            percentage >= 60 ? 'bg-blue-500' :
+                percentage >= 40 ? 'bg-yellow-500' :
                     'bg-red-500'
-                }" style="width: ${percentage}%"></div>
+        }" style="width: ${percentage}%"></div>
             </div>
             
             <div class="flex justify-center space-x-4">
@@ -420,12 +425,12 @@ function showResults() {
             </div>
         </div>
     `;
-    
+
     const questionContainer = document.getElementById('question-container');
     if (questionContainer) {
         questionContainer.innerHTML = resultsHTML;
     } else {
-        console.error("Élément 'question-container' non trouvé");
+        //console.error("Élément 'question-container' non trouvé");
     }
 }
 
@@ -437,20 +442,20 @@ function restartQuiz() {
 }
 
 // Au chargement de la page
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Récupérer l'ID de catégorie depuis l'URL
     const categorieId = getCategoryIdFromUrl();
-    
+
     // Récupérer le nom de la catégorie depuis les paramètres URL
     const urlParams = new URLSearchParams(window.location.search);
     const categoryName = urlParams.get('categoryName') || "Quiz";
-    
+
     // Afficher le nom de la catégorie
     const categoryNameElement = document.getElementById('category-name');
     if (categoryNameElement) {
         categoryNameElement.textContent = categoryName;
     }
-    
+
     // Récupérer et afficher le nom d'utilisateur s'il est disponible
     const username = localStorage.getItem('username');
     if (username) {
@@ -459,7 +464,7 @@ document.addEventListener('DOMContentLoaded', function() {
             usernameElement.textContent = username;
         }
     }
-    
+
     // Créer et afficher le bouton de démarrage du quiz
     const questionContainer = document.getElementById('question-container');
     if (questionContainer) {
@@ -482,11 +487,11 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
         questionContainer.classList.remove('hidden');
-        
+
         // Ajouter un écouteur d'événement au bouton de démarrage
         document.getElementById('start-quiz-button').addEventListener('click', startQuiz);
     } else {
-        console.error("Élément 'question-container' non trouvé dans le DOM");
+       //console.error("Élément 'question-container' non trouvé dans le DOM");
     }
 });
 
@@ -494,15 +499,15 @@ document.addEventListener('DOMContentLoaded', function() {
 async function saveScore() {
     const categorieId = getCategoryIdFromUrl();
     if (!categorieId) {
-        console.error("Impossible d'enregistrer le score: ID de catégorie manquant");
+        //console.error("Impossible d'enregistrer le score: ID de catégorie manquant");
         return;
     }
-    
+
     // Créer l'objet de données pour l'API
     const scoreData = {
         score: score
     };
-    
+
     try {
         // Envoyer la requête à l'API
         const response = await fetch(`${API_BASE_URL}/client/saveScore`, {
@@ -513,18 +518,18 @@ async function saveScore() {
             body: JSON.stringify(scoreData),
             credentials: 'include' // Important pour inclure les cookies de session
         });
-        
+
         const data = await response.text();
-        
+
         if (response.ok) {
-            console.log("🟢 Score enregistré avec succès:", data);
+            //console.log("🟢 Score enregistré avec succès:", data);
             return true;
         } else {
-            console.error("🔴 Erreur lors de l'enregistrement du score:", data);
+            //console.error("🔴 Erreur lors de l'enregistrement du score:", data);
             return false;
         }
     } catch (error) {
-        console.error("🔴 Exception lors de l'enregistrement du score:", error);
+        //console.error("🔴 Exception lors de l'enregistrement du score:", error);
         return false;
     }
 }
@@ -533,7 +538,7 @@ async function saveScore() {
 function showResults() {
     const percentage = Math.round((score / currentQuizz.length) * 100);
     let message, messageClass;
-    
+
     if (percentage >= 80) {
         message = "Excellent travail!";
         messageClass = "text-green-400";
@@ -547,13 +552,13 @@ function showResults() {
         message = "Continuez à apprendre!";
         messageClass = "text-red-400";
     }
-    
+
     // Enregistrer le score dans la base de données
     saveScore().then(saved => {
-        const savingMessage = saved 
-            ? `<div class="text-green-400 text-sm mt-2 mb-4">Score enregistré dans votre profil!</div>` 
+        const savingMessage = saved
+            ? `<div class="text-green-400 text-sm mt-2 mb-4">Score enregistré dans votre profil!</div>`
             : `<div class="text-red-400 text-sm mt-2 mb-4">Échec de l'enregistrement du score</div>`;
-        
+
         const resultsHTML = `
             <div class="backdrop-blur-lg bg-dark-700/50 border border-white/10 rounded-xl shadow-xl p-8 w-full animate-fade-in text-center">
                 <h3 class="text-2xl font-bold mb-4 ${messageClass}">${message}</h3>
@@ -565,12 +570,11 @@ function showResults() {
                 </div>
                 
                 <div class="w-full bg-dark-900/50 rounded-full h-4 mb-8 border border-white/10">
-                    <div class="h-4 rounded-full ${
-                        percentage >= 80 ? 'bg-green-500' : 
-                        percentage >= 60 ? 'bg-blue-500' : 
-                        percentage >= 40 ? 'bg-yellow-500' : 
+                    <div class="h-4 rounded-full ${percentage >= 80 ? 'bg-green-500' :
+                percentage >= 60 ? 'bg-blue-500' :
+                    percentage >= 40 ? 'bg-yellow-500' :
                         'bg-red-500'
-                    }" style="width: ${percentage}%"></div>
+            }" style="width: ${percentage}%"></div>
                 </div>
                 
                 <div class="flex justify-center space-x-4">
@@ -604,12 +608,12 @@ function showResults() {
                 </div>
             </div>
         `;
-        
+
         const questionContainer = document.getElementById('question-container');
         if (questionContainer) {
             questionContainer.innerHTML = resultsHTML;
         } else {
-            console.error("Élément 'question-container' non trouvé");
+            //console.error("Élément 'question-container' non trouvé");
         }
     });
 }

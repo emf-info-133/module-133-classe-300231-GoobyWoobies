@@ -13,12 +13,11 @@ public class WrkQuizz {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-
     public List<Question> getQuestionsByCategorie(int categorieId) {
         String sql = "SELECT * FROM t_question WHERE categorie_id = ? ORDER BY RAND() LIMIT 20";
-    
+
         try {
-            return jdbcTemplate.query(sql, new Object[]{categorieId}, (rs, rowNum) -> {
+            return jdbcTemplate.query(sql, new Object[] { categorieId }, (rs, rowNum) -> {
                 Question q = new Question();
                 q.setTexte(rs.getString("texte"));
                 q.setId(rs.getInt("id"));
@@ -36,21 +35,19 @@ public class WrkQuizz {
         }
     }
 
-    public boolean addQuestion(String texte, int categorie_id, String choix1, String choix2, String choix3, String choix4, int bonne_reponse) {
+    public boolean addQuestion(String texte, int categorie_id, String choix1, String choix2, String choix3,
+            String choix4, int bonne_reponse) {
         String sql = "INSERT INTO t_question (texte, categorie_id, choix1, choix2, choix3, choix4, bonne_reponse) VALUES (?, ?, ?, ?, ?, ?, ?)";
-   
+
         try {
 
             // Insertion dans la base de données
             int result = jdbcTemplate.update(sql, texte, categorie_id, choix1, choix2, choix3, choix4, bonne_reponse);
-            return result > 0;  // Retourne true si une ligne a été insérée avec succès
+            return result > 0; // Retourne true si une ligne a été insérée avec succès
         } catch (Exception e) {
             System.err.println("Erreur lors de l'ajout de la question : " + e.getMessage());
-            return false;  // Retourne faux en cas d'erreur
+            return false; // Retourne faux en cas d'erreur
         }
     }
-    
-    
-    
 
 }

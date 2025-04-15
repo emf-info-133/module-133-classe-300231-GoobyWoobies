@@ -30,7 +30,7 @@ public class WrkCategorie {
 
     public String addCategory(String nom) {
         String sql = "INSERT INTO t_categorie (nom) VALUES (?)";
-    
+
         try {
             int result = jdbcTemplate.update(sql, nom);
             return "true";
@@ -39,6 +39,5 @@ public class WrkCategorie {
             return "false";
         }
     }
-    
-    
+
 }

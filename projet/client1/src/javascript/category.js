@@ -14,17 +14,17 @@ function fetchCategories(successCallback, errorCallback) {
     xhrFields: {
       withCredentials: true  // Important pour envoyer les cookies de session
     },
-    beforeSend: function() {
-      console.log('🔵 Envoi de la requête pour récupérer les catégories...');
+    beforeSend: function () {
+      //console.log('🔵 Envoi de la requête pour récupérer les catégories...');
     },
-    success: function(response) {
-      console.log('🟢 Catégories récupérées avec succès:', response);
+    success: function (response) {
+      //console.log('🟢 Catégories récupérées avec succès:', response);
       if (successCallback && typeof successCallback === 'function') {
         successCallback(response);
       }
     },
-    error: function(xhr, status, error) {
-      console.error('🔴 Erreur lors de la récupération des catégories:', error);
+    error: function (xhr, status, error) {
+      //console.error('🔴 Erreur lors de la récupération des catégories:', error);
       if (errorCallback && typeof errorCallback === 'function') {
         errorCallback(error);
       }
@@ -40,22 +40,22 @@ function displayCategories() {
   // Afficher un indicateur de chargement
   const categoriesContainer = $('.grid');
   categoriesContainer.html('<div class="col-span-full text-center"><span class="animate-pulse">Chargement des catégories...</span></div>');
-  
+
   fetchCategories(
-    
+
     // Success callback
-    function(categories) {
+    function (categories) {
       // Vider le conteneur
       categoriesContainer.empty();
-      
+
       // Parcourir les catégories et créer les cartes
-      categories.forEach(function(category) {
+      categories.forEach(function (category) {
         const categoryCard = createCategoryCard(category);
         categoriesContainer.append(categoryCard);
       });
     },
     // Error callback
-    function(error) {
+    function (error) {
       categoriesContainer.html(`
         <div class="col-span-full text-center p-8 backdrop-blur-lg bg-dark-700/50 border border-red-500/30 rounded-xl">
           <p class="text-red-400">Impossible de charger les catégories</p>
@@ -74,8 +74,8 @@ function displayCategories() {
 function createCategoryCard(category) {
   // Déterminer l'icône appropriée en fonction du nom de la catégorie
   let iconPath = '';
-  
-  switch(category.nom.toLowerCase()) {
+
+  switch (category.nom.toLowerCase()) {
     case 'développement':
     case 'developpement':
     case 'development':
@@ -121,12 +121,12 @@ function createCategoryCard(category) {
  * @param {Number} categoryId - Identifiant de la catégorie
  */
 function selectCategory(categoryId) {
-  console.log(`Catégorie sélectionnée: ${categoryId}`);
+  //console.log(`Catégorie sélectionnée: ${categoryId}`);
   // Redirection vers la page du quiz avec l'ID de la catégorie
   window.location.href = `./quizz.html?category=${categoryId}`;
 }
 
 // Charger les catégories au chargement de la page
-$(document).ready(function() {
+$(document).ready(function () {
   displayCategories();
 });

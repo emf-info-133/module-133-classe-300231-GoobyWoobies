@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CodeQuizz - Leaderboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/tailwindcss-animated@1.0.0/src/index.min.js"></script>
@@ -25,71 +26,167 @@
         }
       }
     }
- 
+
     // Fonction pour gérer la déconnexion
     function logout() {
       const xhr = new XMLHttpRequest();
       xhr.open("POST", "https://docker-133.angeli.emf-informatique.ch/client/logout", true);
       xhr.withCredentials = true;
-      xhr.onload = function() {
+      xhr.onload = function () {
         if (xhr.status === 200) {
           window.location.href = "/index.html";
         } else {
           console.error("Erreur lors de la déconnexion:", xhr.status);
         }
       };
-      xhr.onerror = function() {
+      xhr.onerror = function () {
         console.error("Erreur réseau lors de la déconnexion");
       };
       xhr.send();
     }
   </script>
 </head>
+
 <body class="bg-gradient-to-br from-dark-900 to-dark-800 font-sans min-h-screen text-gray-200">
   <!-- Éléments décoratifs en arrière-plan -->
   <div class="fixed inset-0 z-0 overflow-hidden">
     <div class="absolute top-10 left-10 w-96 h-96 bg-accent-primary/20 rounded-full blur-3xl"></div>
     <div class="absolute bottom-10 right-10 w-96 h-96 bg-accent-primary/10 rounded-full blur-3xl"></div>
   </div>
- 
+
   <div class="relative z-10">
-    <header class="backdrop-blur-md bg-dark-800/60 border-b border-white/10 text-white p-4 flex justify-between items-center">
+    <header
+      class="backdrop-blur-md bg-dark-800/60 border-b border-white/10 text-white p-4 flex justify-between items-center">
       <div class="flex items-center gap-3">
-        <h1 class="text-2xl font-bold tracking-tighter bg-gradient-to-r from-accent-primary to-accent-secondary text-transparent bg-clip-text">CodeQuizz</h1>
-        <span class="text-xs px-2 py-1 rounded bg-accent-primary/20 text-accent-primary border border-accent-primary/20">Leaderboard</span>
+        <h1
+          class="text-2xl font-bold tracking-tighter bg-gradient-to-r from-accent-primary to-accent-secondary text-transparent bg-clip-text">
+          CodeQuizz</h1>
+        <span
+          class="text-xs px-2 py-1 rounded bg-accent-primary/20 text-accent-primary border border-accent-primary/20">Leaderboard</span>
       </div>
       <div class="flex gap-4 items-center">
-        <span id="username" class="text-gray-300 px-3 py-1 rounded-full bg-dark-700/50 backdrop-blur-sm border border-white/10">
+        <span id="username"
+          class="text-gray-300 px-3 py-1 rounded-full bg-dark-700/50 backdrop-blur-sm border border-white/10">
           <span id="current-username">Chargement...</span>
         </span>
-        <button onclick="logout()" class="text-sm bg-dark-700/80 hover:bg-dark-600/90 px-4 py-1.5 rounded-full shadow-lg shadow-accent-primary/10 transition-all duration-300 hover:scale-105 backdrop-blur-sm border border-white/10">
+        <button onclick="logout()"
+          class="text-sm bg-dark-700/80 hover:bg-dark-600/90 px-4 py-1.5 rounded-full shadow-lg shadow-accent-primary/10 transition-all duration-300 hover:scale-105 backdrop-blur-sm border border-white/10">
           Déconnexion
         </button>
       </div>
     </header>
- 
+
     <main class="container mx-auto py-8 px-4">
-      <div class="backdrop-blur-lg bg-dark-700/30 border border-white/10 rounded-xl shadow-lg p-6 max-w-4xl mx-auto">
+      <div class="backdrop-blur-lg bg-dark-700/30 border border-white/10 rounded-xl shadow-lg p-6 max-w-5xl mx-auto">
         <div class="flex justify-between items-center mb-8">
-          <h2 class="text-2xl font-semibold text-white">Top 10 des joueurs</h2>
+          <div>
+            <h2 class="text-2xl font-semibold text-white">Top 10 des joueurs</h2>
+            <p class="text-sm text-gray-400 mt-1">Classement des meilleurs joueurs en fonction de leur score et rang</p>
+          </div>
           <div class="flex gap-2">
-            <button id="refresh-btn" class="text-sm bg-dark-700/80 hover:bg-dark-600/90 px-4 py-1.5 rounded-full shadow-lg shadow-accent-primary/10 transition-all duration-300 hover:scale-105 backdrop-blur-sm border border-white/10 flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            <button id="refresh-btn"
+              class="text-sm bg-dark-700/80 hover:bg-dark-600/90 px-4 py-2 rounded-full shadow-lg shadow-accent-primary/10 transition-all duration-300 hover:scale-105 backdrop-blur-sm border border-white/10 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
               Actualiser
             </button>
           </div>
         </div>
-        
+
+        <!-- Tableau explicatif des rangs -->
+<div class="mb-6 p-6 bg-dark-600/20 rounded-lg border border-white/10">
+  <h3 class="text-base font-medium text-gray-300 mb-4">Système de rangs</h3>
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+    <div class="bg-dark-700/40 p-4 rounded border border-white/5 flex items-center gap-3">
+      <img src="../images/rank10.png" alt="Grandmaster" class="w-12 h-12 rounded-md" />
+      <div>
+        <div class="text-sm text-gray-400">1500+ points</div>
+        <div class="font-semibold text-white">Grandmaster</div>
+      </div>
+    </div>
+    <div class="bg-dark-700/40 p-4 rounded border border-white/5 flex items-center gap-3">
+      <img src="../images/rank9.png" alt="Master" class="w-12 h-12 rounded-md" />
+      <div>
+        <div class="text-sm text-gray-400">1000+ points</div>
+        <div class="font-semibold text-white">Master</div>
+      </div>
+    </div>
+    <div class="bg-dark-700/40 p-4 rounded border border-white/5 flex items-center gap-3">
+      <img src="../images/rank8.png" alt="Diamond" class="w-12 h-12 rounded-md" />
+      <div>
+        <div class="text-sm text-gray-400">500+ points</div>
+        <div class="font-semibold text-white">Diamond</div>
+      </div>
+    </div>
+    <div class="bg-dark-700/40 p-4 rounded border border-white/5 flex items-center gap-3">
+      <img src="../images/rank7.png" alt="Platinum" class="w-12 h-12 rounded-md" />
+      <div>
+        <div class="text-sm text-gray-400">250+ points</div>
+        <div class="font-semibold text-white">Platinum</div>
+      </div>
+    </div>
+    <div class="bg-dark-700/40 p-4 rounded border border-white/5 flex items-center gap-3">
+      <img src="../images/rank6.png" alt="Gold" class="w-12 h-12 rounded-md" />
+      <div>
+        <div class="text-sm text-gray-400">150+ points</div>
+        <div class="font-semibold text-white">Gold</div>
+      </div>
+    </div>
+    <div class="bg-dark-700/40 p-4 rounded border border-white/5 flex items-center gap-3">
+      <img src="../images/rank5.png" alt="Silver" class="w-12 h-12 rounded-md" />
+      <div>
+        <div class="text-sm text-gray-400">100+ points</div>
+        <div class="font-semibold text-white">Silver</div>
+      </div>
+    </div>
+    <div class="bg-dark-700/40 p-4 rounded border border-white/5 flex items-center gap-3">
+      <img src="../images/rank4.png" alt="Bronze" class="w-12 h-12 rounded-md" />
+      <div>
+        <div class="text-sm text-gray-400">50+ points</div>
+        <div class="font-semibold text-white">Bronze</div>
+      </div>
+    </div>
+    <div class="bg-dark-700/40 p-4 rounded border border-white/5 flex items-center gap-3">
+      <img src="../images/rank3.png" alt="Iron" class="w-12 h-12 rounded-md" />
+      <div>
+        <div class="text-sm text-gray-400">25+ points</div>
+        <div class="font-semibold text-white">Iron</div>
+      </div>
+    </div>
+    <div class="bg-dark-700/40 p-4 rounded border border-white/5 flex items-center gap-3">
+      <img src="../images/rank2.png" alt="Rookie" class="w-12 h-12 rounded-md" />
+      <div>
+        <div class="text-sm text-gray-400">10+ points</div>
+        <div class="font-semibold text-white">Rookie</div>
+      </div>
+    </div>
+    <div class="bg-dark-700/40 p-4 rounded border border-white/5 flex items-center gap-3">
+      <img src="../images/rank1.png" class="w-12 h-12 rounded-md text-2xl flex items-center justify-center"/>
+      <div>
+        <div class="text-sm text-gray-400">0+ points</div>
+        <div class="font-semibold text-white">Unranked</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
         <!-- Tableau du leaderboard -->
         <div class="overflow-hidden rounded-xl border border-white/10 bg-dark-600/20 backdrop-blur-sm">
           <table class="min-w-full divide-y divide-white/10">
             <thead class="bg-dark-700/50">
               <tr>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Rang</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Utilisateur</th>
-                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Score</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  Position</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  Joueur</th>
+                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  Score</th>
+                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  Badge</th>
               </tr>
             </thead>
             <tbody id="leaderboard-body" class="divide-y divide-white/5">
@@ -97,9 +194,12 @@
               <tr>
                 <td colspan="4" class="px-6 py-12 text-center text-gray-400">
                   <div class="flex flex-col items-center justify-center">
-                    <svg class="animate-spin h-8 w-8 text-accent-primary mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <svg class="animate-spin h-8 w-8 text-accent-primary mb-4" xmlns="http://www.w3.org/2000/svg"
+                      fill="none" viewBox="0 0 24 24">
                       <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                      </path>
                     </svg>
                     <span>Chargement des données...</span>
                   </div>
@@ -108,28 +208,31 @@
             </tbody>
           </table>
         </div>
-        
+
         <!-- Section pour votre classement -->
-        <div class="mt-8 p-4 rounded-lg bg-accent-primary/10 border border-accent-primary/20">
-          <h3 class="font-medium text-white mb-2">Votre classement</h3>
+        <div class="mt-8 p-6 rounded-lg bg-accent-primary/10 border border-accent-primary/20">
+          <h3 class="font-medium text-white mb-3">Votre classement</h3>
           <div id="user-ranking" class="flex justify-between items-center">
-            <div class="flex items-center gap-3">
-              <span id="user-rank" class="text-xl font-bold text-accent-primary">--</span>
-              <span id="user-name" class="text-gray-200 text-xl">--</span>
-            </div>
-            <div class="flex items-center gap-6">
-              <div>
-                <p class="text-xs text-gray-400">Score</p>
-                <p id="user-score" class="font-medium text-white">--</p>
-              </div>
+            <!-- Sera remplacé par le JS -->
+            <div class="flex flex-col items-center justify-center w-full py-4">
+              <svg class="animate-spin h-8 w-8 text-accent-primary mb-2" xmlns="http://www.w3.org/2000/svg"
+                fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                </path>
+              </svg>
+              <span>Chargement de votre classement...</span>
             </div>
           </div>
         </div>
-        
+
         <!-- Bouton retour -->
         <div class="mt-6 flex justify-center">
-          <a href="./main.html" class="py-2 px-6 bg-dark-600/50 text-gray-300 font-medium rounded-lg border border-white/10 hover:bg-dark-600/70 transition duration-300 flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <a href="./main.html"
+            class="py-2 px-6 bg-dark-600/50 text-gray-300 font-medium rounded-lg border border-white/10 hover:bg-dark-600/70 transition duration-300 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Retour à l'accueil
@@ -137,8 +240,18 @@
         </div>
       </div>
     </main>
+
+    <!-- Footer avec légende des badges -->
+    <footer class="container mx-auto py-4 px-4 mb-8">
+      <div class="backdrop-blur-lg bg-dark-700/20 border border-white/10 rounded-lg shadow-lg p-4 max-w-5xl mx-auto">
+        <p class="text-sm text-gray-400 text-center">
+          Progressez dans les rangs en répondant correctement aux quiz et en augmentant votre score!
+        </p>
+      </div>
+    </footer>
   </div>
 </body>
 <script src="../javascript/leaderboard.js" defer></script>
 <script src="../javascript/session.js" defer></script>
+
 </html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accès Refusé</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'accent-primary': '#8B5CF6',
+                        'accent-secondary': '#5D5FEF',
+                        'dark-600': '#2D3748',
+                        'dark-700': '#1A202C',
+                        'dark-800': '#171923',
+                        'dark-900': '#0D1117',
+                    },
+                    animation: {
+                        'float': 'float 4s ease-in-out infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'fade-in': 'fadeIn 0.7s ease-in forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 5px rgba(139, 92, 246, 0.5)' },
+                            '100%': { boxShadow: '0 0 20px rgba(139, 92, 246, 0.8)' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(to right, #8B5CF6, #5D5FEF);
+            opacity: 0.5;
+        }
+        
+        .error-text {
+            background: linear-gradient(to right, #8B5CF6, #5D5FEF);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        @keyframes morph {
+            0% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+            100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+        }
+        
+        .blob {
+            animation: morph 8s ease-in-out infinite;
+            background: linear-gradient(to right, rgba(139, 92, 246, 0.3), rgba(93, 95, 239, 0.3));
+            height: 400px;
+            width: 400px;
+            position: absolute;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="bg-dark-900 text-white flex items-center justify-center min-h-screen overflow-hidden">
+    <!-- Fond de particules -->
+    <div id="particles" class="fixed inset-0 z-0"></div>
+    
+    <!-- Blob animé -->
+    <div class="blob top-10 left-1/4"></div>
+    <div class="blob bottom-10 right-1/4" style="animation-delay: -4s;"></div>
+    
+    <!-- Conteneur principal -->
+    <div class="relative z-10 max-w-3xl w-full p-6 animate-fade-in">
+        <div class="backdrop-blur-xl bg-dark-800/70 border border-white/10 rounded-2xl shadow-2xl p-8 md:p-12 overflow-hidden">
+            <!-- Icône de verrouillage -->
+            <div class="flex justify-center mb-8">
+                <div class="relative">
+                    <div class="absolute inset-0 rounded-full bg-gradient-to-r from-accent-primary to-accent-secondary blur-lg opacity-60 animate-pulse-slow"></div>
+                    <div class="relative bg-dark-700/70 rounded-full p-5 backdrop-blur-sm border border-white/10 animate-float">
+                        <svg class="w-16 h-16 text-accent-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Titre et message d'erreur -->
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-4 text-center error-text">Accès Refusé</h1>
+            
+            <div class="space-y-6 mb-8">
+                <p class="text-lg md:text-xl text-center text-gray-300">
+                    Vous n'avez pas accès à cette ressource.
+                </p>
+                <p class="text-base text-center text-gray-400">
+                    Pour accéder à ce contenu, vous devez vous connecter ou disposer des autorisations nécessaires.
+                </p>
+            </div>
+            
+            <!-- Message d'erreur avec effet d'écriture -->
+            <div class="bg-dark-900/70 rounded-lg p-4 mb-8 border border-red-500/20">
+                <p class="text-red-400 font-mono text-sm" id="error-message">Erreur 403: Authentification requise pour accéder à cette page...</p>
+            </div>
+            
+            <!-- Bouton de connexion -->
+            <div class="flex justify-center">
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-accent-primary to-accent-secondary rounded-full blur opacity-50 group-hover:opacity-100 transition duration-500"></div>
+                    <a href="../client1/src/html/index.html" class="relative px-8 py-4 backdrop-blur-lg bg-dark-700/70 border border-white/10 rounded-full shadow-lg text-white font-medium text-lg transition-all duration-300 hover:scale-105 flex items-center gap-3 group-hover:text-white overflow-hidden">
+                        <span class="relative z-10">Se connecter</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                        </svg>
+                        <div class="absolute inset-0 bg-gradient-to-r from-accent-primary to-accent-secondary opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Badge "Sécurité" -->
+        <div class="absolute -top-3 -right-3 md:top-5 md:right-5 bg-dark-700/90 border border-white/10 rounded-full py-2 px-4 shadow-lg backdrop-blur-sm">
+            <div class="flex items-center gap-2">
+                <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                <span class="text-xs font-semibold tracking-wide text-gray-300">SÉCURITÉ</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animation d'écriture pour le message d'erreur
+        const errorMessage = document.getElementById('error-message');
+        const originalText = errorMessage.textContent;
+        errorMessage.textContent = '';
+        
+        let charIndex = 0;
+        const typeEffect = () => {
+            if (charIndex < originalText.length) {
+                errorMessage.textContent += originalText.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeEffect, 50);
+            }
+        };
+        
+        // Démarrer l'animation d'écriture après un léger délai
+        setTimeout(typeEffect, 500);
+        
+        // Création des particules en arrière-plan
+        const particlesContainer = document.getElementById('particles');
+        const numParticles = 50;
+        
+        for (let i = 0; i < numParticles; i++) {
+            createParticle();
+        }
+        
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            // Taille aléatoire entre 2 et 8px
+            const size = Math.random() * 6 + 2;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            
+            // Position initiale aléatoire
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            particle.style.left = `${x}px`;
+            particle.style.top = `${y}px`;
+            
+            // Animation de déplacement aléatoire
+            const duration = Math.random() * 30 + 10; // 10-40 secondes
+            const xMove = Math.random() * 100 - 50; // -50 à 50px
+            const yMove = Math.random() * 100 - 50; // -50 à 50px
+            
+            particle.animate([
+                { transform: 'translate(0, 0)', opacity: Math.random() * 0.5 + 0.1 },
+                { transform: `translate(${xMove}px, ${yMove}px)`, opacity: Math.random() * 0.5 + 0.1 }
+            ], {
+                duration: duration * 1000,
+                iterations: Infinity,
+                direction: 'alternate',
+                easing: 'ease-in-out'
+            });
+            
+            particlesContainer.appendChild(particle);
+        }
+    </script>
+</body>
+</html>

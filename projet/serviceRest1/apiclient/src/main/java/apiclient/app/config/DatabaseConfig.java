@@ -8,15 +8,15 @@ import javax.sql.DataSource;
 
 @Configuration
 public class DatabaseConfig {
-    
+
     @Bean
     public DataSource dataSource() {
         return DataSourceBuilder.create()
-            .url("jdbc:mysql://mysql-rest1:3306/mysql_rest1") // Utiliser le nom du service dans Docker
-            .username("root") 
-            .password("emf123") 
-            .driverClassName("com.mysql.cj.jdbc.Driver")
-            .build();
+                .url("jdbc:mysql://mysql-rest1:3306/mysql_rest1") // Utiliser le nom du service dans Docker
+                .username("root")
+                .password("emf123")
+                .driverClassName("com.mysql.cj.jdbc.Driver")
+                .build();
     }
 
     @Bean

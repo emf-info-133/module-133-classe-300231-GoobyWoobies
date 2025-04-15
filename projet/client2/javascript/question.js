@@ -20,17 +20,17 @@ function displayCategories(categories) {
                 btn.classList.remove("bg-accent-primary/30", "text-white");
                 btn.classList.add("bg-dark-600/20", "text-gray-300");
             });
-        
+
             button.classList.remove("bg-dark-600/20", "text-gray-300");
             button.classList.add("bg-accent-primary/30", "text-white");
-        
+
             // Enregistrer l'ID de la catégorie sélectionnée
             selectedCategoryId = category.id;
-        
+
             // Log pour vérifier l'ID sélectionné
-            console.log("Catégorie sélectionnée :", category.nom, "ID:", selectedCategoryId);
+            //console.log("Catégorie sélectionnée :", category.nom, "ID:", selectedCategoryId);
         });
-        
+
 
         li.appendChild(button);
         categoryList.appendChild(li);
@@ -55,15 +55,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const choix3 = document.getElementById("choix3").value.trim();
         const choix4 = document.getElementById("choix4").value.trim();
         const selectedBonneReponse = document.querySelector('input[name="bonne-reponse"]:checked');
-        
+
         if (!selectedBonneReponse) {
             alert("Tu dois cocher la bonne réponse !");
             return;
         }
-        
+
         const bonneReponse = parseInt(selectedBonneReponse.value); // <-- c'est ici que tu récupères "1", "2", etc.
-        
-        
+
+
 
         if (!question || !choix1 || !choix2 || !choix3 || !choix4 || !bonneReponse) {
             alert("Merci de remplir tous les champs et de choisir la bonne réponse.");
@@ -79,8 +79,8 @@ document.addEventListener("DOMContentLoaded", () => {
             choix4: choix4,
             bonneReponse: bonneReponse  // <-- Renommé en camelCase
         };
-        
-        console.log("Données envoyées :", data);
+
+        //console.log("Données envoyées :", data);
 
         try {
             const response = await fetch("https://docker-133.angeli.emf-informatique.ch/admin/addQuestion", {
@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 alert("Erreur lors de l'ajout de la question.");
             }
         } catch (error) {
-            console.error("Erreur réseau :", error);
+            //console.error("Erreur réseau :", error);
             alert("Une erreur s'est produite. Veuillez réessayer.");
         }
     });
